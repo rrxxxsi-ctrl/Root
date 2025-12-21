@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>تايتان OS - المعالج الذكي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #020203;
+            --panel-bg: rgba(10, 10, 15, 0.8);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #a855f7;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-color);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            touch-action: manipulation;
+        }
+
+        /* شبكة تقنية نشطة */
+        .tech-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+        }
+
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+            animation: mesh-pulse 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes mesh-pulse {
+            from { opacity: 0.5; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+
+        .shimmer-text {
+            background: linear-gradient(135deg, #fff 0%, #818cf8 40%, #c084fc 60%, #fff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+        }
+
+        /* حلقات الصورة المتحركة */
+        .ring-spin {
+            animation: spin 10s linear infinite;
+        }
+        .ring-spin-reverse {
+            animation: spin-reverse 15s linear infinite;
+        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+        .pulse-glow {
+            animation: pulse-glow 3s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); transform: scale(1); }
+            to { box-shadow: 0 0 50px rgba(99, 102, 241, 0.6); transform: scale(1.02); }
+        }
+
+        .active-glow {
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .dev-name-glow {
+            animation: dev-glow 3s infinite alternate;
+        }
+        @keyframes dev-glow {
+            from { text-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
+            to { text-shadow: 0 0 40px rgba(99, 102, 241, 0.8), 0 0 60px rgba(168, 85, 247, 0.4); }
+        }
+
+        .floating { animation: float 6s infinite ease-in-out; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+</head>
+<body>
+    <div class="tech-grid"></div>
+    <div class="mesh-bg"></div>
+    <div id="root"></div>
+</body>
+</html>
