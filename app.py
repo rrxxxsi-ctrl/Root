@@ -4,11 +4,10 @@ import whisper
 import os
 
 app = Flask(__name__)
-CORS(app) # للسماح للواجهة بالاتصال بالسيرفر
+CORS(app) 
 
-# تحميل نموذج الذكاء الاصطناعي (يتم تحميله مرة واحدة عند تشغيل السيرفر)
-print("Loading AI Model... Please wait.")
-model = whisper.load_model("base") 
+# استخدمنا النسخة tiny لتجنب مشكلة نفاد الذاكرة التي ظهرت عندك
+model = whisper.load_model("tiny") 
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe_video():
@@ -20,16 +19,13 @@ def transcribe_video():
     video_file.save(file_path)
 
     try:
-        # عملية استخراج النص باستخدام الذكاء الاصطناعي
-        result = model.transcribe(file_path, language='ar')
-        extracted_text = result['text']
-        
-        # حذف الملف المؤقت بعد المعالجة
+        result = model.transcribe(file_path)
         os.remove(file_path)
-        
-        return jsonify({"text": extracted_text})
+        return jsonify({"text": result['text']})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+    
