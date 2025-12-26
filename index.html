@@ -46,7 +46,7 @@
                 <div class="w-full bg-gray-200 rounded-full h-2">
                     <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
-                <p class="text-[10px] text-gray-400 mt-1 text-center">جاري المعالجة...</p>
+                <p class="text-[10px] text-gray-400 mt-1 text-center font-bold text-blue-600">جاري المعالجة بالذكاء الاصطناعي...</p>
             </div>
 
             <div id="resultArea" class="hidden animate-fade-in">
@@ -55,18 +55,15 @@
                         <i class="fas fa-check-circle ml-2"></i>
                         <span class="text-sm font-bold">تم استخراج النص بنجاح</span>
                     </div>
-                    <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">03:21</span>
                 </div>
                 
                 <div class="bg-gray-50 p-4 rounded-xl border text-sm text-gray-700 leading-relaxed text-right min-h-[150px]" id="extractedText">
-                    </div>
+                </div>
 
                 <div class="flex gap-2 mt-4">
                     <button id="copyBtn" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2">
                         <i class="far fa-copy"></i> نسخ النص
                     </button>
-                    <button class="bg-gray-100 p-3 rounded-xl text-gray-600"><i class="fas fa-share-alt"></i></button>
-                    <button class="bg-gray-100 p-3 rounded-xl text-gray-600"><i class="fas fa-download"></i></button>
                 </div>
             </div>
         </div>
@@ -81,44 +78,50 @@
         const extractedText = document.getElementById('extractedText');
         const fileNameDisplay = document.getElementById('fileName');
 
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener('change', async function(e) {
             const file = e.target.files[0];
-            if (file) {
-                simulateUpload(file);
-            }
-        });
+            if (!file) return;
 
-        function simulateUpload(file) {
+            // تجهيز واجهة التحميل
             fileNameDisplay.textContent = file.name;
             progressArea.classList.remove('hidden');
             resultArea.classList.add('hidden');
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    showResult();
-                }
-                progressBar.style.width = progress + '%';
-                progressPercent.textContent = Math.round(progress) + '%';
-            }, 200);
-        }
+            progressBar.style.width = '50%'; // شريط وهمي للبدء
+            progressPercent.textContent = 'جاري الرفع...';
 
-        function showResult() {
-            progressArea.classList.add('hidden');
-            resultArea.classList.remove('hidden');
-            extractedText.innerHTML = `
-                مرحباً بكم في هذا الدرس الجديد حول الذكاء الاصطناعي.<br><br>
-                اليوم سنتحدث عن كيفية معالجة اللغات الطبيعية باستخدام الشبكات العصبية العميقة.<br><br>
-                كما ترون في هذا المخطط البياني، البيانات تمر عبر عدة طبقات لاستخراج الخصائص المهمة. هذه العملية تسمى "استخراج الميزات" وهي أساسية لفهم...
-            `;
-        }
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                // الربط الحقيقي بالسيرفر الخاص بك على Render
+                const response = await fetch('https://root-fie5.onrender.com/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('فشل السيرفر في المعالجة');
+
+                const data = await response.json();
+
+                if (data.text) {
+                    // عرض النتيجة
+                    extractedText.textContent = data.text;
+                    progressArea.classList.add('hidden');
+                    resultArea.classList.remove('hidden');
+                } else {
+                    alert("حدث خطأ: " + (data.error || "لا يمكن استخراج النص"));
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("تعذر الاتصال بالسيرفر. تأكد أن رابط Render يعمل.");
+            }
+        });
 
         document.getElementById('copyBtn').addEventListener('click', () => {
-            alert('تم نسخ النص إلى الحافظة!');
+            navigator.clipboard.writeText(extractedText.textContent);
+            alert('تم نسخ النص!');
         });
     </script>
 </body>
-</html>
+    </html>
+    
