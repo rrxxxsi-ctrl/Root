@@ -4,22 +4,32 @@ from faster_whisper import WhisperModel
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app) # هذا السطر ضروري جداً لحل مشكلة "خطأ في الاتصال"
 
+# استخدام نموذج خفيف جداً ليناسب ذاكرة Render المجانية
 model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe_video():
     if 'file' not in request.files:
         return jsonify({"error": "No file"}), 400
+    
     file = request.files['file']
-    file.save("temp.mp4")
+    file_path = "temp_video.mp4"
+    file.save(file_path)
+
     try:
-        segments, info = model.transcribe("temp.mp4", beam_size=5)
+        # استخراج النص
+        segments, info = model.transcribe(file_path, beam_size=5)
         text = " ".join([segment.text for segment in segments])
-        os.remove("temp.mp4")
+        
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            
         return jsonify({"text": text})
     except Exception as e:
+        if os.path.exists(file_path):
+            os.remove(file_path)
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
