@@ -2,81 +2,123 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>اشتراك Netflix</title>
+<title>اشتراك نتفليكس</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
-body{background:#111;display:flex;justify-content:center;align-items:center;height:100vh;}
+body{background:#0b0b0b;display:flex;justify-content:center;align-items:center;height:100vh;}
 .container{
   width:1080px;height:1920px;
-  background: radial-gradient(circle at center,rgba(255,120,0,.15),#000 70%);
+  background: radial-gradient(circle at top,#1a1a1a,#000 80%);
   color:#fff;position:relative;overflow:hidden;
   padding:60px;
+  box-shadow:0 0 80px rgba(255,180,80,.3);
 }
+
+/* الشعار */
 .netflix-logo{
   text-align:center;
   font-size:120px;font-weight:900;color:#e50914;
-  text-shadow:0 0 40px rgba(229,9,20,.6);
+  text-shadow:0 0 60px rgba(229,9,20,.7);
 }
+
+/* النص المصحح */
 .header-text{
-  text-align:center;margin-top:20px;font-size:42px;font-weight:700;
+  text-align:center;margin-top:20px;font-size:48px;font-weight:700;line-height:1.3;
 }
+.header-text span{color:#e50914;}
+
+/* الدرع الذهبي */
 .shield{
-  width:400px;margin:50px auto;
-  background:linear-gradient(180deg,#ffdf9a,#b8860b);
-  border-radius:24px;padding:40px;text-align:center;
-  box-shadow:0 0 50px rgba(255,190,80,.5);
+  width:420px;margin:50px auto;
+  background:linear-gradient(180deg,#ffd36a,#b8860b);
+  border-radius:30px;padding:50px;text-align:center;
+  box-shadow:0 0 60px rgba(255,190,80,.7);
 }
-.shield h2{font-size:64px;font-weight:900;}
-.shield p{margin-top:15px;font-size:26px;}
+.shield h2{font-size:70px;font-weight:900;text-shadow:0 0 20px rgba(255,200,120,.7);}
+.shield p{margin-top:20px;font-size:28px;font-weight:600;color:#1a1a1a;}
+
+/* السعر */
 .price-section{
-  text-align:center;margin-top:40px;
+  text-align:center;margin-top:50px;
 }
 .price-section p{font-size:36px;margin-bottom:10px;}
 .price-section .price{
-  font-size:90px;font-weight:900;color:#ffcc66;
-  text-shadow:0 0 30px rgba(255,180,80,.7);
+  font-size:100px;font-weight:900;color:#ffcc66;
+  text-shadow:0 0 40px rgba(255,180,80,.9);
 }
+.price-section .subnote{font-size:34px;margin-top:10px;color:#f5f5f5;font-weight:600;}
+
+/* الأجهزة */
 .devices{
-  display:flex;justify-content:center;gap:30px;margin-top:50px;
+  display:flex;justify-content:center;gap:40px;margin-top:50px;
 }
 .device{
-  width:260px;height:160px;
-  background:#222;border-radius:18px;
-  box-shadow:0 0 30px rgba(255,120,0,.4);
+  width:280px;height:170px;
+  background:#222;border-radius:22px;
+  box-shadow:0 0 40px rgba(255,120,0,.5);
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
 }
+.device:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 60px rgba(255,180,80,.8);
+}
+
+/* المميزات */
 .features{
   margin-top:50px;text-align:center;
-  font-size:32px;line-height:1.8;
+  font-size:34px;line-height:1.8;
 }
-.features span{margin-left:15px;color:#ffcc66;font-weight:900;}
+.features span{
+  margin-left:15px;
+  color:#ffd36a;font-weight:900;
+  text-shadow:0 0 15px rgba(255,200,120,.6);
+}
+
+/* زر واتساب */
 .whatsapp{
   display:flex;justify-content:center;margin-top:60px;
 }
 .whatsapp a{
-  background:#25D366;color:#fff;font-size:36px;
-  padding:20px 40px;border-radius:60px;text-decoration:none;
+  background:#25D366;color:#fff;font-size:38px;
+  padding:22px 50px;border-radius:60px;text-decoration:none;
   display:flex;align-items:center;gap:20px;
-  box-shadow:0 0 30px rgba(37,211,102,.5);
+  box-shadow:0 0 40px rgba(37,211,102,.5);
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
 }
-.whatsapp a:hover{opacity:0.85;}
+.whatsapp a:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 60px rgba(37,211,102,.8);
+}
+
+/* تأثير Glow خفيف عام */
+.glow{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at center,rgba(255,180,80,.1),transparent 70%);
+  pointer-events:none;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
+  <div class="glow"></div>
+
   <div class="netflix-logo">NETFLIX</div>
-  <div class="header-text">اشتراك لمدة <span style="color:#e50914;">Netflix</span> سنة كاملة<br>اقضوا عامًا كاملًا من الترفيه المتواصل</div>
+
+  <div class="header-text">
+    اشتراك <span>نتفليكس</span> لمدة سنة كاملة
+  </div>
 
   <div class="shield">
-    <h2>ذهبي<br>ضمان</h2>
-    <p>تعويض كامل على حسب اتفاقنا معك</p>
+    <h2>الضمان الذهبي</h2>
+    <p>تعويض كامل في حال توقف الحساب قبل انتهاء المدة</p>
   </div>
 
   <div class="price-section">
     <p>سعر الاشتراك فقط</p>
     <div class="price">200 ريال</div>
-    <p>لاشتراك لمدة عام كامل</p>
+    <div class="subnote">لاشتراك لمدة عام كامل</div>
   </div>
 
   <div class="devices">
@@ -86,7 +128,7 @@ body{background:#111;display:flex;justify-content:center;align-items:center;heig
   </div>
 
   <div class="features">
-    <p><span>✓</span> دعم افـلو 4K لــقـة الوضوح</p>
+    <p><span>✓</span> دعم جودة 4K فائقة الوضوح</p>
     <p><span>✓</span> يعمل على جميع الأجهزة</p>
     <p><span>✓</span> حساب آمن بخصوصية تامة</p>
   </div>
