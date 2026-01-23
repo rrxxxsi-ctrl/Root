@@ -92,6 +92,30 @@
             font-size: 14px;
         }
         
+        /* رقم الجوال */
+        .contact-section {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .contact-text {
+            color: white;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .phone-number {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            direction: ltr;
+            letter-spacing: 1px;
+        }
+        
         /* قسم التفاصيل */
         .details-box {
             background: rgba(255, 255, 255, 0.05);
@@ -209,8 +233,8 @@
             font-size: 14px;
         }
         
-        /* زر الشاهد */
-        .watch-button {
+        /* زر التواصل */
+        .contact-button {
             background: #e50914;
             color: white;
             border: none;
@@ -228,7 +252,7 @@
             gap: 8px;
         }
         
-        .watch-button:hover {
+        .contact-button:hover {
             background: #ff0a16;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(229, 9, 20, 0.4);
@@ -256,9 +280,15 @@
         <div class="image-content">
             <!-- العنوان -->
             <div class="title-section">
-                <h1 class="main-title">تقدم لكم إشتراك Netflix</h1>
+                <h1 class="main-title">نقدم لكم اشتراك Netflix</h1>
                 <h2 class="sub-title">سنة كاملة</h2>
                 <p class="description">تجربة ترفيهية متكاملة بدون انقطاع</p>
+            </div>
+            
+            <!-- رقم الجوال -->
+            <div class="contact-section">
+                <div class="contact-text">للحجز والاستفسار</div>
+                <div class="phone-number">0591388202</div>
             </div>
             
             <!-- تفاصيل الاشتراك -->
@@ -293,7 +323,7 @@
                 
                 <div class="feature-item">
                     <i class="fas fa-check-circle check-icon"></i>
-                    <span class="feature-text">حساب خاص وآمن بخصوصية تامة</span>
+                    <span class="feature-text">حساب ملف خاص بخصوصية تامة</span>
                 </div>
             </div>
             
@@ -315,30 +345,25 @@
                     تسليم فوري وضمان شهر كامل
                 </div>
                 <div class="price">200 ريال</div>
-                <div class="price-text">فقط للاشتراك لمدة عام كامل!</div>
+                <div class="price-text">سعر الاشتراك السنوي</div>
             </div>
             
-            <!-- زر الشاهد -->
-            <button class="watch-button">
-                <i class="fas fa-play-circle"></i>
-                ابدأ المشاهدة الآن
+            <!-- زر التواصل -->
+            <button class="contact-button" onclick="window.location.href='tel:0591388202'">
+                <i class="fas fa-phone-alt"></i>
+                اتصل الآن للاشتراك
             </button>
         </div>
     </div>
 
     <script>
-        // تفاعل مع زر الشاهد
-        document.querySelector('.watch-button').addEventListener('click', function() {
+        // تفاعل مع زر التواصل
+        document.querySelector('.contact-button').addEventListener('click', function() {
             // تأثير النقر
             this.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
             }, 150);
-            
-            // رسالة تأكيد
-            setTimeout(() => {
-                alert('جاري تفعيل اشتراك Netflix الخاص بك...');
-            }, 200);
         });
         
         // تأثيرات للأيقونات
@@ -352,6 +377,21 @@
             icon.addEventListener('mouseleave', function() {
                 this.style.transform = 'scale(1)';
                 this.style.color = 'white';
+            });
+        });
+        
+        // نسخ رقم الهاتف عند النقر عليه
+        document.querySelector('.phone-number').addEventListener('click', function() {
+            const phoneNumber = '0591388202';
+            navigator.clipboard.writeText(phoneNumber).then(() => {
+                const originalText = this.textContent;
+                this.textContent = 'تم النسخ!';
+                this.style.color = '#4CAF50';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.color = '#FFD700';
+                }, 1500);
             });
         });
     </script>
