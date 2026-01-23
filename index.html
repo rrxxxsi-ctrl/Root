@@ -92,30 +92,6 @@
             font-size: 14px;
         }
         
-        /* رقم الجوال */
-        .contact-section {
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 6px;
-            padding: 8px;
-            margin-bottom: 10px;
-            text-align: center;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-        }
-        
-        .contact-text {
-            color: white;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-        
-        .phone-number {
-            color: #FFD700;
-            font-size: 18px;
-            font-weight: bold;
-            direction: ltr;
-            letter-spacing: 1px;
-        }
-        
         /* قسم التفاصيل */
         .details-box {
             background: rgba(255, 255, 255, 0.05);
@@ -197,8 +173,8 @@
             line-height: 1.4;
         }
         
-        /* قسم التسليم والسعر */
-        .delivery-price {
+        /* قسم السعر */
+        .price-section {
             background: rgba(76, 175, 80, 0.1);
             border-radius: 6px;
             padding: 12px;
@@ -207,30 +183,44 @@
             border: 1px solid rgba(76, 175, 80, 0.2);
         }
         
-        .delivery-text {
-            color: #4CAF50;
+        .price-text {
+            color: white;
             font-size: 14px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .delivery-text i {
-            margin-left: 6px;
+            margin-bottom: 5px;
         }
         
         .price {
             color: #FFD700;
-            font-size: 34px;
+            font-size: 38px;
             font-weight: 900;
             margin: 5px 0;
             text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
         }
         
-        .price-text {
-            color: white;
-            font-size: 14px;
+        .price-note {
+            color: #4CAF50;
+            font-size: 13px;
+        }
+        
+        /* رقم الجوال في الأسفل */
+        .phone-section {
+            margin-top: auto;
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .phone-number {
+            color: #FFD700;
+            font-size: 22px;
+            font-weight: bold;
+            direction: ltr;
+            letter-spacing: 1px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 5px;
         }
         
         /* زر التواصل */
@@ -245,7 +235,7 @@
             cursor: pointer;
             width: 100%;
             transition: all 0.3s;
-            margin-top: auto;
+            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -283,12 +273,6 @@
                 <h1 class="main-title">نقدم لكم اشتراك Netflix</h1>
                 <h2 class="sub-title">سنة كاملة</h2>
                 <p class="description">تجربة ترفيهية متكاملة بدون انقطاع</p>
-            </div>
-            
-            <!-- رقم الجوال -->
-            <div class="contact-section">
-                <div class="contact-text">للحجز والاستفسار</div>
-                <div class="phone-number">0591388202</div>
             </div>
             
             <!-- تفاصيل الاشتراك -->
@@ -338,14 +322,16 @@
                 </p>
             </div>
             
-            <!-- التسليم والسعر -->
-            <div class="delivery-price">
-                <div class="delivery-text">
-                    <i class="fas fa-shipping-fast"></i>
-                    تسليم فوري وضمان شهر كامل
-                </div>
-                <div class="price">200 ريال</div>
+            <!-- السعر -->
+            <div class="price-section">
                 <div class="price-text">سعر الاشتراك السنوي</div>
+                <div class="price">200 ريال</div>
+                <div class="price-note">تسليم فوري وضمان شهر كامل</div>
+            </div>
+            
+            <!-- رقم الجوال في الأسفل -->
+            <div class="phone-section">
+                <div class="phone-number">0591388202</div>
             </div>
             
             <!-- زر التواصل -->
