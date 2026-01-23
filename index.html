@@ -3,78 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استخراج النص من الفيديو</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>اشتراك Netflix لمدة سنة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
-        .upload-area { border: 2px dashed #cbd5e1; transition: all 0.3s ease; }
-        .upload-area:hover { border-color: #3b82f6; background-color: #eff6ff; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #141414 0%, #222222 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .card {
+            background: linear-gradient(to bottom, #E50914, #B81D24);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+        
+        .card-header {
+            padding: 25px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .netflix-logo {
+            font-size: 42px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+        }
+        
+        .netflix-logo span {
+            color: #E50914;
+            background-color: #fff;
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .card-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .offer-badge {
+            display: inline-block;
+            background-color: #ffd700;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-left: 10px;
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+        
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .features-list li i {
+            color: #ffd700;
+            margin-left: 10px;
+            font-size: 18px;
+        }
+        
+        .guarantee {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border-right: 4px solid #ffd700;
+        }
+        
+        .guarantee i {
+            color: #ffd700;
+            font-size: 22px;
+            margin-left: 5px;
+        }
+        
+        .price-section {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .price {
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+        
+        .duration {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .device-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            font-size: 28px;
+        }
+        
+        .device-icons i {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .cta-button {
+            display: block;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        
+        .cta-button:hover {
+            background-color: #ffd700;
+            color: #000;
+            transform: translateY(-3px);
+        }
+        
+        .delivery-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        
+        .delivery-info i {
+            color: #4CAF50;
+            margin-left: 8px;
+            font-size: 20px;
+        }
+        
+        .footer-note {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            opacity: 0.7;
+            padding: 0 10px;
+        }
+        
+        @media (max-width: 480px) {
+            .card-header, .card-body {
+                padding: 20px;
+            }
+            
+            .netflix-logo {
+                font-size: 36px;
+            }
+            
+            .price {
+                font-size: 42px;
+            }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold text-center mb-8">تحويل الفيديو إلى نص</h2>
-            <div id="dropZone" class="upload-area rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer mb-6">
-                <i class="fas fa-cloud-upload-alt text-blue-500 text-4xl mb-4"></i>
-                <p class="font-bold text-gray-700">اختر ملف الفيديو</p>
-                <input type="file" id="fileInput" class="hidden" accept="video/*">
-                <button onclick="document.getElementById('fileInput').click()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg w-full">تصفح الملفات</button>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="netflix-logo">NET<span>F</span>LIX</div>
+                <h1 class="card-title">اشتراك سنوي كامل</h1>
+                <p class="card-subtitle">تجربة ترفيهية متكاملة دون انقطاع</p>
+                <div class="offer-badge">عرض محدود</div>
             </div>
-
-            <div id="progressArea" class="hidden mb-6 bg-gray-50 p-4 rounded-xl border">
-                <p class="text-xs font-bold text-blue-600 text-center mb-2" id="statusText">جاري الرفع والمعالجة...</p>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 50%"></div>
+            
+            <div class="card-body">
+                <h2 class="section-title"><i class="fas fa-star"></i> مزايا الاشتراك</h2>
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> سنة كاملة من المشاهدة غير المحدودة</li>
+                    <li><i class="fas fa-check-circle"></i> جودة 4K فائقة الوضوح</li>
+                    <li><i class="fas fa-check-circle"></i> دعم اللغة العربية وكل المحتوى</li>
+                    <li><i class="fas fa-check-circle"></i> يعمل على جميع الأجهزة</li>
+                    <li><i class="fas fa-check-circle"></i> حساب خاص وآمن بخصوصية تامة</li>
+                </ul>
+                
+                <div class="guarantee">
+                    <h3><i class="fas fa-shield-alt"></i> ضمان ذهبي</h3>
+                    <p>استرداد كامل للمبلغ إذا توقف الحساب قبل انتهاء المدة المتفق عليها</p>
                 </div>
-            </div>
-
-            <div id="resultArea" class="hidden">
-                <div class="bg-gray-50 p-4 rounded-xl border text-sm text-gray-700 text-right min-h-[150px] whitespace-pre-wrap" id="extractedText"></div>
-                <button id="copyBtn" class="w-full mt-4 bg-green-600 text-white py-3 rounded-xl font-bold">نسخ النص</button>
+                
+                <div class="device-icons">
+                    <i class="fas fa-mobile-alt" title="هواتف محمولة"></i>
+                    <i class="fas fa-tablet-alt" title="أجهزة لوحية"></i>
+                    <i class="fas fa-tv" title="تلفزيون"></i>
+                    <i class="fas fa-laptop" title="كمبيوتر"></i>
+                </div>
+                
+                <div class="price-section">
+                    <p class="duration">اشتراك لمدة 12 شهراً</p>
+                    <div class="price">200 ريال</div>
+                    <p>بدلاً من <s>720 ريال سنوياً</s></p>
+                    
+                    <div class="delivery-info">
+                        <i class="fas fa-bolt"></i>
+                        <span>تسليم فوري وضمان لمدة 30 يوم</span>
+                    </div>
+                </div>
+                
+                <a href="#" class="cta-button">
+                    <i class="fas fa-shopping-cart"></i> احصل على الاشتراك الآن
+                </a>
+                
+                <p class="footer-note">
+                    هذا العرض لفترة محدودة. يمكنك إلغاء الاشتراك في أي وقت مع الاحتفاظ بالضمان الذهبي.
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const progressArea = document.getElementById('progressArea');
-        const resultArea = document.getElementById('resultArea');
-        const extractedText = document.getElementById('extractedText');
-
-        fileInput.addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            progressArea.classList.remove('hidden');
-            resultArea.classList.add('hidden');
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                // الربط مع رابط السيرفر الخاص بك في Render
-                const response = await fetch('https://root-fie5.onrender.com/transcribe', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) throw new Error('فشل السيرفر');
-
-                const data = await response.json();
-                extractedText.textContent = data.text;
-                progressArea.classList.add('hidden');
-                resultArea.classList.remove('hidden');
-            } catch (error) {
-                alert("حدث خطأ في الاتصال بالسيرفر. تأكد أن سيرفر Render في حالة Live.");
-                progressArea.classList.add('hidden');
-            }
+        // تأثير بسيط عند النقر على زر الشراء
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('شكراً لاهتمامك! ستتم إعادة توجيهك إلى صفحة الدفع.');
+            // في التطبيق الحقيقي، هنا يتم التوجيه إلى صفحة الدفع
         });
-
-        document.getElementById('copyBtn').addEventListener('click', () => {
-            navigator.clipboard.writeText(extractedText.textContent);
-            alert('تم نسخ النص!');
+        
+        // تأثيرات تفاعلية للأيقونات
+        const icons = document.querySelectorAll('.device-icons i');
+        icons.forEach(icon => {
+            icon.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.2)';
+                this.style.transition = 'transform 0.3s';
+            });
+            
+            icon.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
         });
     </script>
 </body>
