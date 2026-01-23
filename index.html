@@ -1,441 +1,144 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix التفاصيل الكاملة</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: #111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
-        }
-        
-        /* تصميم الصورة الثانية بنفس الحجم */
-        .netflix-details-card {
-            width: 350px;
-            height: 500px;
-            background: linear-gradient(145deg, #000000 0%, #e50914 100%);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            border: 2px solid #333;
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
-        }
-        
-        /* الهيدر الأحمر */
-        .details-header {
-            background: #e50914;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .details-logo {
-            color: white;
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-        
-        .details-logo span {
-            background: white;
-            color: #e50914;
-            padding: 0 4px;
-            border-radius: 3px;
-            margin-left: 2px;
-        }
-        
-        /* محتوى الصورة */
-        .details-content {
-            padding: 15px;
-            height: calc(100% - 70px);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* العنوان */
-        .details-title {
-            text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
-        }
-        
-        .details-main-title {
-            color: white;
-            font-size: 22px;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-        
-        .details-sub-title {
-            color: #FFD700;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        /* قسم الأسعار الكاملة */
-        .full-prices {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .prices-title {
-            color: #FFD700;
-            font-size: 18px;
-            margin-bottom: 15px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .price-row:last-child {
-            border-bottom: none;
-        }
-        
-        .price-name {
-            color: white;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .price-value {
-            color: #FFD700;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        
-        .special-offer {
-            background: rgba(76, 175, 80, 0.2);
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin-top: 10px;
-            text-align: center;
-        }
-        
-        .offer-text {
-            color: #4CAF50;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        /* تقييمات العملاء */
-        .customer-reviews {
-            background: rgba(255, 215, 0, 0.08);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .reviews-title {
-            color: #FFD700;
-            font-size: 18px;
-            margin-bottom: 12px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .review {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .review:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .review-stars {
-            color: #FFD700;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-        
-        .review-content {
-            flex: 1;
-        }
-        
-        .review-text {
-            color: #ddd;
-            font-size: 13px;
-            line-height: 1.4;
-            margin-bottom: 5px;
-        }
-        
-        .reviewer {
-            color: #FFD700;
-            font-size: 12px;
-        }
-        
-        /* معلومات الاتصال الواضحة */
-        .contact-info-large {
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: center;
-            border: 2px solid #FFD700;
-        }
-        
-        .contact-title {
-            color: #FFD700;
-            font-size: 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .phone-large {
-            color: #FFD700;
-            font-size: 28px;
-            font-weight: bold;
-            direction: ltr;
-            letter-spacing: 2px;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            display: block;
-        }
-        
-        .contact-note {
-            color: white;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        
-        /* معلومات إضافية */
-        .extra-info {
-            background: rgba(76, 175, 80, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: auto;
-        }
-        
-        .info-title {
-            color: #4CAF50;
-            font-size: 16px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .info-text {
-            color: white;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        
-        /* التأثير العلوي */
-        .netflix-details-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #FFD700, #e50914, #FFD700);
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Netflix Offer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
+body{background:#111;display:flex;justify-content:center;align-items:center;height:100vh}
+.poster{
+  width:1080px;height:1920px;
+  background:
+    radial-gradient(circle at center,rgba(255,120,0,.25),#000 65%),
+    linear-gradient(to bottom,#000,#120700,#000);
+  color:#fff;position:relative;overflow:hidden;
+}
+.glow{position:absolute;inset:0;background:url('noise.png');opacity:.15;mix-blend-mode:overlay}
+.top{
+  text-align:center;padding:80px 60px 40px;
+}
+.netflix{
+  font-size:120px;font-weight:900;letter-spacing:6px;color:#e50914;
+  text-shadow:0 0 40px rgba(229,9,20,.6);
+}
+.subtitle{
+  margin-top:20px;font-size:42px;font-weight:700;
+}
+.ribbon{
+  margin:35px auto 0;
+  background:linear-gradient(90deg,#ffb347,#ff6a00);
+  color:#000;padding:18px 60px;
+  font-size:36px;font-weight:800;border-radius:60px;
+  display:inline-block;
+}
+.content{
+  display:flex;gap:40px;padding:60px;
+}
+.badge{
+  width:420px;
+  background:linear-gradient(180deg,#ffdf9a,#b8860b);
+  border-radius:24px;padding:40px;color:#000;
+  box-shadow:0 0 50px rgba(255,190,80,.5);
+}
+.badge h2{
+  font-size:64px;font-weight:900;text-align:center;
+}
+.badge p{
+  margin-top:25px;font-size:26px;line-height:1.6;text-align:center;
+}
+.details{
+  flex:1;padding-top:20px;
+}
+.details h3{
+  font-size:44px;margin-bottom:30px;
+}
+.list{
+  list-style:none;
+}
+.list li{
+  font-size:30px;margin-bottom:22px;
+  display:flex;align-items:center;gap:14px;
+}
+.check{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(#ffd36a,#ff9f1a);
+  color:#000;display:flex;align-items:center;justify-content:center;
+  font-weight:900;
+}
+.devices{
+  margin:40px 60px 0;
+  display:flex;justify-content:center;gap:30px;
+}
+.device-box{
+  width:260px;height:160px;
+  background:#222;border-radius:18px;
+  box-shadow:0 0 30px rgba(255,120,0,.4);
+}
+.family{
+  margin:60px auto 0;
+  width:900px;height:380px;
+  background:#222;border-radius:30px;
+  box-shadow:0 0 60px rgba(255,120,0,.5);
+}
+.footer{
+  position:absolute;bottom:0;width:100%;
+  padding:60px;text-align:center;
+}
+.price{
+  font-size:90px;font-weight:900;color:#ffcc66;
+  text-shadow:0 0 30px rgba(255,180,80,.7);
+}
+.price span{font-size:42px;color:#fff}
+.note{
+  margin-top:20px;font-size:34px;font-weight:700;
+}
+</style>
 </head>
 <body>
-    <!-- الصورة الثانية بالتفاصيل الكاملة -->
-    <div class="netflix-details-card">
-        <div class="details-header">
-            <div class="details-logo">NET<span>F</span>LIX</div>
-        </div>
-        
-        <div class="details-content">
-            <!-- العنوان -->
-            <div class="details-title">
-                <h1 class="details-main-title">Netflix المميز</h1>
-                <h2 class="details-sub-title">كل التفاصيل والأسعار</h2>
-            </div>
-            
-            <!-- الأسعار الكاملة -->
-            <div class="full-prices">
-                <div class="prices-title">
-                    <i class="fas fa-tags"></i>
-                    الأسعار والعروض
-                </div>
-                
-                <div class="price-row">
-                    <div class="price-name">
-                        <i class="far fa-calendar"></i>
-                        اشتراك 3 أشهر
-                    </div>
-                    <div class="price-value">75 ريال</div>
-                </div>
-                
-                <div class="price-row">
-                    <div class="price-name">
-                        <i class="far fa-calendar-alt"></i>
-                        اشتراك 6 أشهر
-                    </div>
-                    <div class="price-value">120 ريال</div>
-                </div>
-                
-                <div class="price-row">
-                    <div class="price-name">
-                        <i class="fas fa-crown"></i>
-                        اشتراك سنة كاملة
-                    </div>
-                    <div class="price-value">200 ريال</div>
-                </div>
-                
-                <div class="special-offer">
-                    <div class="offer-text">
-                        <i class="fas fa-piggy-bank"></i>
-                        توفير يصل إلى 45% مع الاشتراك السنوي
-                    </div>
-                </div>
-            </div>
-            
-            <!-- تقييمات العملاء -->
-            <div class="customer-reviews">
-                <div class="reviews-title">
-                    <i class="fas fa-comment-alt"></i>
-                    آراء العملاء
-                </div>
-                
-                <div class="review">
-                    <div class="review-content">
-                        <div class="review-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="review-text">
-                            "أفضل خدمة، الجودة ممتازة والتسليم سريع جداً"
-                        </div>
-                        <div class="reviewer">- محمد أحمد</div>
-                    </div>
-                </div>
-                
-                <div class="review">
-                    <div class="review-content">
-                        <div class="review-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <div class="review-text">
-                            "خدمة موثوقة ودعم فني ممتاز، أنصح الجميع"
-                        </div>
-                        <div class="reviewer">- سارة خالد</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- معلومات الاتصال - واضحة وكبيرة -->
-            <div class="contact-info-large">
-                <div class="contact-title">
-                    <i class="fas fa-phone-alt"></i>
-                    للتواصل والاستفسار
-                </div>
-                <div class="phone-large">0591388202</div>
-                <div class="contact-note">
-                    <i class="fab fa-whatsapp" style="color: #25D366;"></i>
-                    متاح على واتساب 24/7
-                </div>
-            </div>
-            
-            <!-- معلومات إضافية -->
-            <div class="extra-info">
-                <div class="info-title">
-                    <i class="fas fa-info-circle"></i>
-                    معلومات إضافية
-                </div>
-                <div class="info-text">
-                    • تسليم فوري خلال 10 دقائق<br>
-                    • ضمان استمرارية لمدة 30 يوم<br>
-                    • دعم فني متواصل<br>
-                    • حساب خاص وآمن 100%
-                </div>
-            </div>
-        </div>
+
+<div class="poster">
+  <div class="glow"></div>
+
+  <div class="top">
+    <div class="netflix">NETFLIX</div>
+    <div class="subtitle">نقدم لكم اشتراك Netflix لمدة سنة كاملة</div>
+    <div class="ribbon">تجربة ترفيهية متكاملة بلا انقطاع</div>
+  </div>
+
+  <div class="content">
+    <div class="badge">
+      <h2>الذهبي<br>ضمان</h2>
+      <p>تعويض كامل في حال توقف الحساب قبل انتهاء المدة المتفق عليها</p>
     </div>
 
-    <script>
-        // نسخ رقم الهاتف عند النقر
-        document.querySelector('.phone-large').addEventListener('click', function() {
-            const phoneNumber = '0591388202';
-            navigator.clipboard.writeText(phoneNumber).then(() => {
-                const originalText = this.textContent;
-                this.textContent = '✓ تم النسخ';
-                this.style.color = '#4CAF50';
-                this.style.background = 'rgba(76, 175, 80, 0.3)';
-                
-                setTimeout(() => {
-                    this.textContent = originalText;
-                    this.style.color = '#FFD700';
-                    this.style.background = 'rgba(0, 0, 0, 0.3)';
-                }, 2000);
-            });
-        });
-        
-        // فتح واتساب عند النقر على الملاحظة
-        document.querySelector('.contact-note').addEventListener('click', function() {
-            const phoneNumber = '0591388202';
-            const message = 'مرحباً، أريد الاستفسار عن اشتراك Netflix';
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappURL, '_blank');
-        });
-        
-        // تفاعل مع عناصر الأسعار
-        document.querySelectorAll('.price-row').forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.style.background = 'rgba(255, 215, 0, 0.1)';
-                this.style.transition = 'background 0.3s';
-            });
-            
-            row.addEventListener('mouseleave', function() {
-                this.style.background = 'transparent';
-            });
-        });
-    </script>
+    <div class="details">
+      <h3>تفاصيل الاشتراك</h3>
+      <ul class="list">
+        <li><div class="check">✓</div>سنة كاملة مشاهدة متواصلة</li>
+        <li><div class="check">✓</div>جودة 4K فائقة الوضوح</li>
+        <li><div class="check">✓</div>دعم اللغة العربية وجميع الفئات</li>
+        <li><div class="check">✓</div>يعمل على جميع الأجهزة</li>
+        <li><div class="check">✓</div>حساب آمن بخصوصية تامة</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="family"></div>
+
+  <div class="devices">
+    <div class="device-box"></div>
+    <div class="device-box"></div>
+    <div class="device-box"></div>
+  </div>
+
+  <div class="footer">
+    <div class="note">تسليم فوري وضمان شهر كامل</div>
+    <div class="price">200 <span>ريال</span></div>
+    <div class="note">لاشتراك لمدة عام كامل</div>
+  </div>
+
+</div>
+
 </body>
 </html>
