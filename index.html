@@ -18,11 +18,12 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            padding: 20px;
         }
         
-        /* تصميم الصورة بالحجم المطلوب */
-        .netflix-promo {
+        /* تصميم الصورة بنفس الحجم المطلوب */
+        .netflix-promo-card {
             width: 350px;
             height: 500px;
             background: linear-gradient(145deg, #0a0a0a 0%, #e50914 100%);
@@ -34,7 +35,7 @@
         }
         
         /* الهيدر الأحمر */
-        .promo-header {
+        .card-header {
             background: #e50914;
             height: 60px;
             display: flex;
@@ -43,14 +44,14 @@
             position: relative;
         }
         
-        .netflix-logo-large {
+        .netflix-logo {
             color: white;
             font-size: 32px;
             font-weight: 900;
             letter-spacing: -1px;
         }
         
-        .netflix-logo-large span {
+        .netflix-logo span {
             background: white;
             color: #e50914;
             padding: 0 5px;
@@ -59,137 +60,236 @@
         }
         
         /* محتوى الصورة */
-        .promo-content {
-            padding: 25px;
+        .card-content {
+            padding: 20px;
             height: calc(100% - 60px);
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
         
         /* العنوان الرئيسي */
-        .promo-title {
+        .main-title {
             color: white;
-            font-size: 24px;
+            font-size: 22px;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 700;
         }
         
-        .promo-subtitle {
+        .main-subtitle {
             color: #FFD700;
-            font-size: 20px;
+            font-size: 18px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             font-weight: 600;
         }
         
-        .promo-description {
+        .description {
             color: #ddd;
-            font-size: 16px;
+            font-size: 14px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         
-        /* ميزات الاشتراك */
-        .promo-features {
+        /* معلومات الاتصال */
+        .contact-info {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .feature-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature-row:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .feature-icon {
+        .phone-number {
             color: #FFD700;
-            font-size: 24px;
-            margin-left: 15px;
-            width: 40px;
-            text-align: center;
-        }
-        
-        .feature-text {
-            color: white;
-            font-size: 16px;
-            flex: 1;
-        }
-        
-        .feature-highlight {
-            color: #FFD700;
-            font-weight: bold;
             font-size: 18px;
+            font-weight: bold;
+            direction: ltr;
+            margin: 5px 0;
         }
         
-        /* الضمان الذهبي */
-        .gold-guarantee {
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
-            border-right: 4px solid #FFD700;
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 25px;
-            text-align: center;
+        .contact-text {
+            color: white;
+            font-size: 13px;
         }
         
-        .guarantee-title {
+        /* العروض المتعددة */
+        .offers-section {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .offers-title {
             color: #FFD700;
-            font-size: 20px;
+            font-size: 16px;
             margin-bottom: 10px;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
+        .offers-title i {
+            margin-left: 8px;
+        }
+        
+        .offer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .offer-item:last-child {
+            border-bottom: none;
+        }
+        
+        .offer-name {
+            color: white;
+            font-size: 14px;
+        }
+        
+        .offer-price {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        /* تقييمات العملاء */
+        .reviews-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .reviews-title {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .review-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .review-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .review-stars {
+            color: #FFD700;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .review-text {
+            color: #ddd;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .customer-name {
+            color: #FFD700;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+        
+        /* الضمان الموسع */
+        .guarantee-section {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border-right: 3px solid #FFD700;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .guarantee-title {
+            color: #FFD700;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
         .guarantee-title i {
-            margin-left: 10px;
-            font-size: 24px;
+            margin-left: 8px;
         }
         
         .guarantee-text {
             color: white;
-            font-size: 15px;
+            font-size: 13px;
             line-height: 1.5;
         }
         
-        /* السعر والزر */
-        .price-section {
-            margin-top: auto;
-            text-align: center;
+        /* الثقة في الجودة */
+        .quality-section {
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-left: 3px solid #4CAF50;
         }
         
-        .price-tag {
+        .quality-title {
+            color: #4CAF50;
+            font-size: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .quality-title i {
+            margin-left: 8px;
+        }
+        
+        .quality-text {
+            color: white;
+            font-size: 13px;
+        }
+        
+        /* السعر والزر */
+        .price-action {
+            text-align: center;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .price {
             color: #FFD700;
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 900;
-            margin: 15px 0;
+            margin: 10px 0;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
         
         .price-note {
             color: #ddd;
-            font-size: 16px;
-            margin-bottom: 20px;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
         
-        .cta-button {
+        .action-button {
             background: linear-gradient(90deg, #FFD700, #FFA500);
             color: #000;
             border: none;
-            padding: 16px 30px;
+            padding: 14px 25px;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
@@ -197,34 +297,28 @@
             box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
         }
         
-        .cta-button:hover {
+        .action-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
         }
         
-        /* شعارات الأجهزة */
-        .devices-icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-            color: white;
-            font-size: 28px;
+        /* تخصيص شريط التمرير */
+        .card-content::-webkit-scrollbar {
+            width: 6px;
         }
         
-        .devices-icons i {
+        .card-content::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 10px;
+        }
+        
+        .card-content::-webkit-scrollbar-thumb {
+            background: #e50914;
+            border-radius: 10px;
         }
         
         /* تأثيرات إضافية */
-        .netflix-promo::before {
+        .netflix-promo-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -236,69 +330,109 @@
     </style>
 </head>
 <body>
-    <!-- صورة Netflix واحدة عالية الجودة -->
-    <div class="netflix-promo">
-        <div class="promo-header">
-            <div class="netflix-logo-large">NET<span>F</span>LIX</div>
+    <!-- صورة Netflix كاملة التفاصيل -->
+    <div class="netflix-promo-card">
+        <div class="card-header">
+            <div class="netflix-logo">NET<span>F</span>LIX</div>
         </div>
         
-        <div class="promo-content">
-            <h1 class="promo-title">اشتراك Netflix</h1>
-            <h2 class="promo-subtitle">سنوي كامل</h2>
-            <p class="promo-description">تجربة ترفيهية متكاملة بجودة عالية</p>
+        <div class="card-content">
+            <h1 class="main-title">اشتراك Netflix</h1>
+            <h2 class="main-subtitle">عرض حصري لمدة سنة</h2>
+            <p class="description">تجربة ترفيهية متكاملة بجودة عالية</p>
             
-            <div class="devices-icons">
-                <i class="fas fa-tv" title="التلفزيون"></i>
-                <i class="fas fa-laptop" title="الكمبيوتر"></i>
-                <i class="fas fa-mobile-alt" title="الهاتف"></i>
-                <i class="fas fa-tablet-alt" title="التابلت"></i>
+            <!-- معلومات الاتصال -->
+            <div class="contact-info">
+                <div class="contact-text">للحجز والاستفسار:</div>
+                <div class="phone-number">0591388202</div>
+                <div class="contact-text">متاحون على مدار الساعة</div>
             </div>
             
-            <div class="promo-features">
-                <div class="feature-row">
-                    <div class="feature-icon"><i class="far fa-calendar-check"></i></div>
-                    <div class="feature-text">
-                        <span class="feature-highlight">سنة كاملة</span> من المشاهدة المتواصلة
-                    </div>
+            <!-- العروض المتعددة -->
+            <div class="offers-section">
+                <div class="offers-title">
+                    <i class="fas fa-gift"></i>
+                    اختر العرض المناسب لك
                 </div>
-                
-                <div class="feature-row">
-                    <div class="feature-icon"><i class="fas fa-hd"></i></div>
-                    <div class="feature-text">
-                        جودة <span class="feature-highlight">4K فائقة الوضوح</span> مع HDR
-                    </div>
+                <div class="offer-item">
+                    <span class="offer-name">اشتراك 3 أشهر</span>
+                    <span class="offer-price">75 ريال</span>
                 </div>
-                
-                <div class="feature-row">
-                    <div class="feature-icon"><i class="fas fa-globe"></i></div>
-                    <div class="feature-text">
-                        دعم <span class="feature-highlight">اللغة العربية</span> وكل المحتوى العالمي
-                    </div>
+                <div class="offer-item">
+                    <span class="offer-name">اشتراك 6 أشهر</span>
+                    <span class="offer-price">120 ريال</span>
                 </div>
-                
-                <div class="feature-row">
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="feature-text">
-                        حساب <span class="feature-highlight">خاص وآمن</span> بخصوصية تامة
-                    </div>
+                <div class="offer-item">
+                    <span class="offer-name">اشتراك سنة كاملة</span>
+                    <span class="offer-price">200 ريال</span>
+                </div>
+                <div class="offer-item" style="border-bottom: none; padding-top: 10px;">
+                    <span class="offer-name" style="color:#4CAF50">توفير يصل إلى 45%</span>
+                    <span class="offer-price" style="color:#4CAF50">وفر أكثر!</span>
                 </div>
             </div>
             
-            <div class="gold-guarantee">
+            <!-- تقييمات العملاء -->
+            <div class="reviews-section">
+                <div class="reviews-title">تقييمات العملاء</div>
+                
+                <div class="review-item">
+                    <div style="flex: 1;">
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="review-text">أفضل اشتراك حصلت عليه! الجودة ممتازة والخدمة سريعة.</div>
+                        <div class="customer-name">- أحمد س.</div>
+                    </div>
+                </div>
+                
+                <div class="review-item">
+                    <div style="flex: 1;">
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div class="review-text">خدمة موثوقة والتسليم فوري. أنصح الجميع بهذا العرض.</div>
+                        <div class="customer-name">- فاطمة ع.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- الضمان الموسع -->
+            <div class="guarantee-section">
                 <div class="guarantee-title">
-                    <i class="fas fa-gem"></i>
-                    الضمان الذهبي
+                    <i class="fas fa-shield-alt"></i>
+                    تعويض كامل واستمرارية مضمونة
                 </div>
                 <p class="guarantee-text">
-                    تعويض كامل للمبلغ إذا توقف الحساب قبل انتهاء المدة المتفق عليها
+                    في حال توقف الحساب عن العمل قبل انتهاء مدة الاشتراك المتفق عليها، نلتزم بتعويضكم بما يضمن رضاكم التام.
                 </p>
             </div>
             
-            <div class="price-section">
-                <div class="price-tag">200 ريال</div>
-                <div class="price-note">لـ 12 شهر كامل • تسليم فوري • ضمان 30 يوم</div>
-                <button class="cta-button">
-                    <i class="fas fa-play-circle"></i> ابدأ المشاهدة الآن
+            <!-- الثقة في الجودة -->
+            <div class="quality-section">
+                <div class="quality-title">
+                    <i class="fas fa-check-circle"></i>
+                    نثق تماماً بجودة منتجاتنا
+                </div>
+                <p class="quality-text">
+                    نقدم لكم أفضل جودة وخدمة مع ضمان الاستمرارية والدعم الفني على مدار الساعة.
+                </p>
+            </div>
+            
+            <!-- السعر والزر -->
+            <div class="price-action">
+                <div class="price">200 ريال</div>
+                <div class="price-note">للاشتراك السنوي الكامل • تسليم فوري</div>
+                <button class="action-button">
+                    <i class="fas fa-play-circle"></i> اشترك الآن ووفر 45%
                 </button>
             </div>
         </div>
@@ -306,33 +440,28 @@
 
     <script>
         // تفاعل مع زر الاشتراك
-        document.querySelector('.cta-button').addEventListener('click', function() {
+        document.querySelector('.action-button').addEventListener('click', function() {
             // تأثير النقر
             this.style.transform = 'scale(0.98)';
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
             }, 150);
             
-            // محاكاة عملية الاشتراك (في التطبيق الحقيقي هنا سيكون التوجيه لصفحة الدفع)
+            // محاكاة الاتصال
             setTimeout(() => {
-                alert('شكراً لاختيارك! جاري توجيهك لصفحة تفعيل الاشتراك...');
+                alert('جاري الاتصال بالرقم 0591388202 لتأكيد الاشتراك...');
             }, 200);
         });
         
-        // تأثيرات تفاعلية للأيقونات
-        const icons = document.querySelectorAll('.devices-icons i');
-        icons.forEach(icon => {
-            icon.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.2)';
-                this.style.color = '#FFD700';
-                this.style.background = 'rgba(229, 9, 20, 0.3)';
-                this.style.transition = 'all 0.3s';
+        // تفاعل مع عناصر العرض
+        document.querySelectorAll('.offer-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(255, 215, 0, 0.1)';
+                this.style.transition = 'background 0.3s';
             });
             
-            icon.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-                this.style.color = 'white';
-                this.style.background = 'rgba(255, 255, 255, 0.1)';
+            item.addEventListener('mouseleave', function() {
+                this.style.background = 'transparent';
             });
         });
     </script>
