@@ -2,140 +2,99 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Netflix Offer</title>
+<title>اشتراك Netflix</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
-body{background:#111;display:flex;justify-content:center;align-items:center;height:100vh}
-.poster{
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
+body{background:#111;display:flex;justify-content:center;align-items:center;height:100vh;}
+.container{
   width:1080px;height:1920px;
-  background:
-    radial-gradient(circle at center,rgba(255,120,0,.25),#000 65%),
-    linear-gradient(to bottom,#000,#120700,#000);
+  background: radial-gradient(circle at center,rgba(255,120,0,.15),#000 70%);
   color:#fff;position:relative;overflow:hidden;
+  padding:60px;
 }
-.glow{position:absolute;inset:0;background:url('noise.png');opacity:.15;mix-blend-mode:overlay}
-.top{
-  text-align:center;padding:80px 60px 40px;
-}
-.netflix{
-  font-size:120px;font-weight:900;letter-spacing:6px;color:#e50914;
+.netflix-logo{
+  text-align:center;
+  font-size:120px;font-weight:900;color:#e50914;
   text-shadow:0 0 40px rgba(229,9,20,.6);
 }
-.subtitle{
-  margin-top:20px;font-size:42px;font-weight:700;
+.header-text{
+  text-align:center;margin-top:20px;font-size:42px;font-weight:700;
 }
-.ribbon{
-  margin:35px auto 0;
-  background:linear-gradient(90deg,#ffb347,#ff6a00);
-  color:#000;padding:18px 60px;
-  font-size:36px;font-weight:800;border-radius:60px;
-  display:inline-block;
-}
-.content{
-  display:flex;gap:40px;padding:60px;
-}
-.badge{
-  width:420px;
+.shield{
+  width:400px;margin:50px auto;
   background:linear-gradient(180deg,#ffdf9a,#b8860b);
-  border-radius:24px;padding:40px;color:#000;
+  border-radius:24px;padding:40px;text-align:center;
   box-shadow:0 0 50px rgba(255,190,80,.5);
 }
-.badge h2{
-  font-size:64px;font-weight:900;text-align:center;
+.shield h2{font-size:64px;font-weight:900;}
+.shield p{margin-top:15px;font-size:26px;}
+.price-section{
+  text-align:center;margin-top:40px;
 }
-.badge p{
-  margin-top:25px;font-size:26px;line-height:1.6;text-align:center;
-}
-.details{
-  flex:1;padding-top:20px;
-}
-.details h3{
-  font-size:44px;margin-bottom:30px;
-}
-.list{
-  list-style:none;
-}
-.list li{
-  font-size:30px;margin-bottom:22px;
-  display:flex;align-items:center;gap:14px;
-}
-.check{
-  width:36px;height:36px;border-radius:50%;
-  background:linear-gradient(#ffd36a,#ff9f1a);
-  color:#000;display:flex;align-items:center;justify-content:center;
-  font-weight:900;
+.price-section p{font-size:36px;margin-bottom:10px;}
+.price-section .price{
+  font-size:90px;font-weight:900;color:#ffcc66;
+  text-shadow:0 0 30px rgba(255,180,80,.7);
 }
 .devices{
-  margin:40px 60px 0;
-  display:flex;justify-content:center;gap:30px;
+  display:flex;justify-content:center;gap:30px;margin-top:50px;
 }
-.device-box{
+.device{
   width:260px;height:160px;
   background:#222;border-radius:18px;
   box-shadow:0 0 30px rgba(255,120,0,.4);
 }
-.family{
-  margin:60px auto 0;
-  width:900px;height:380px;
-  background:#222;border-radius:30px;
-  box-shadow:0 0 60px rgba(255,120,0,.5);
+.features{
+  margin-top:50px;text-align:center;
+  font-size:32px;line-height:1.8;
 }
-.footer{
-  position:absolute;bottom:0;width:100%;
-  padding:60px;text-align:center;
+.features span{margin-left:15px;color:#ffcc66;font-weight:900;}
+.whatsapp{
+  display:flex;justify-content:center;margin-top:60px;
 }
-.price{
-  font-size:90px;font-weight:900;color:#ffcc66;
-  text-shadow:0 0 30px rgba(255,180,80,.7);
+.whatsapp a{
+  background:#25D366;color:#fff;font-size:36px;
+  padding:20px 40px;border-radius:60px;text-decoration:none;
+  display:flex;align-items:center;gap:20px;
+  box-shadow:0 0 30px rgba(37,211,102,.5);
 }
-.price span{font-size:42px;color:#fff}
-.note{
-  margin-top:20px;font-size:34px;font-weight:700;
-}
+.whatsapp a:hover{opacity:0.85;}
 </style>
 </head>
 <body>
 
-<div class="poster">
-  <div class="glow"></div>
+<div class="container">
+  <div class="netflix-logo">NETFLIX</div>
+  <div class="header-text">اشتراك لمدة <span style="color:#e50914;">Netflix</span> سنة كاملة<br>اقضوا عامًا كاملًا من الترفيه المتواصل</div>
 
-  <div class="top">
-    <div class="netflix">NETFLIX</div>
-    <div class="subtitle">نقدم لكم اشتراك Netflix لمدة سنة كاملة</div>
-    <div class="ribbon">تجربة ترفيهية متكاملة بلا انقطاع</div>
+  <div class="shield">
+    <h2>ذهبي<br>ضمان</h2>
+    <p>تعويض كامل على حسب اتفاقنا معك</p>
   </div>
 
-  <div class="content">
-    <div class="badge">
-      <h2>الذهبي<br>ضمان</h2>
-      <p>تعويض كامل في حال توقف الحساب قبل انتهاء المدة المتفق عليها</p>
-    </div>
-
-    <div class="details">
-      <h3>تفاصيل الاشتراك</h3>
-      <ul class="list">
-        <li><div class="check">✓</div>سنة كاملة مشاهدة متواصلة</li>
-        <li><div class="check">✓</div>جودة 4K فائقة الوضوح</li>
-        <li><div class="check">✓</div>دعم اللغة العربية وجميع الفئات</li>
-        <li><div class="check">✓</div>يعمل على جميع الأجهزة</li>
-        <li><div class="check">✓</div>حساب آمن بخصوصية تامة</li>
-      </ul>
-    </div>
+  <div class="price-section">
+    <p>سعر الاشتراك فقط</p>
+    <div class="price">200 ريال</div>
+    <p>لاشتراك لمدة عام كامل</p>
   </div>
-
-  <div class="family"></div>
 
   <div class="devices">
-    <div class="device-box"></div>
-    <div class="device-box"></div>
-    <div class="device-box"></div>
+    <div class="device"></div>
+    <div class="device"></div>
+    <div class="device"></div>
   </div>
 
-  <div class="footer">
-    <div class="note">تسليم فوري وضمان شهر كامل</div>
-    <div class="price">200 <span>ريال</span></div>
-    <div class="note">لاشتراك لمدة عام كامل</div>
+  <div class="features">
+    <p><span>✓</span> دعم افـلو 4K لــقـة الوضوح</p>
+    <p><span>✓</span> يعمل على جميع الأجهزة</p>
+    <p><span>✓</span> حساب آمن بخصوصية تامة</p>
+  </div>
+
+  <div class="whatsapp">
+    <a href="https://wa.me/966591388202" target="_blank">
+      واتساب للتواصل: 0591388202
+    </a>
   </div>
 
 </div>
