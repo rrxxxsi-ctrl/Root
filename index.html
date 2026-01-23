@@ -3,289 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix اشتراك سنوي</title>
+    <title>Netflix</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #222; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: Arial, sans-serif; }
         
-        body {
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        
-        /* تصميم الصورة بنفس المقاسات تقريباً */
-        .netflix-card {
-            width: 600px; /* مقاس أفقي */
-            height: 400px; /* مقاس رأسي */
-            background: linear-gradient(135deg, #000000 0%, #e50914 100%);
-            border-radius: 8px;
+        /* تصميم صورة صغيرة جداً */
+        .netflix-image {
+            width: 350px; /* حجم صغير */
+            height: 250px; /* حجم صغير */
+            background: linear-gradient(145deg, #000 0%, #e50914 100%);
+            border-radius: 6px;
             overflow: hidden;
             position: relative;
             border: 1px solid #333;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
         }
         
-        /* الشريط الأحمر العلوي */
-        .header {
+        /* رأس Netflix */
+        .image-header {
             background: #e50914;
-            height: 50px;
+            height: 30px;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            justify-content: center;
         }
         
-        .netflix-title {
+        .logo {
             color: white;
-            font-size: 28px;
+            font-size: 18px;
             font-weight: bold;
             letter-spacing: -1px;
         }
         
-        .netflix-title span {
+        .logo span {
             background: white;
             color: #e50914;
-            padding: 0 4px;
-            border-radius: 2px;
+            padding: 0 2px;
+            border-radius: 1px;
         }
         
-        /* المحتوى */
-        .content {
-            padding: 20px;
-            height: calc(100% - 50px);
-            display: flex;
-            flex-direction: column;
+        /* محتوى الصورة */
+        .image-content {
+            padding: 12px;
+            height: calc(100% - 30px);
         }
         
-        /* العنوان الرئيسي */
-        .main-heading {
-            color: white;
-            font-size: 22px;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        
-        .sub-heading {
-            color: #ddd;
-            font-size: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        /* تفاصيل الاشتراك */
-        .details-section {
-            margin-bottom: 15px;
-        }
-        
-        .section-title {
-            color: white;
-            font-size: 18px;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .features-list {
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .feature-item {
+        /* العنوان */
+        .image-title {
             color: white;
             font-size: 14px;
-            display: flex;
-            align-items: center;
-            width: calc(50% - 10px);
-        }
-        
-        .check-mark {
-            color: gold;
-            margin-left: 8px;
-            font-size: 16px;
-        }
-        
-        /* قسم الضمان */
-        .guarantee-section {
-            background: rgba(255, 215, 0, 0.1);
-            border-right: 3px solid gold;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        
-        .guarantee-title {
-            color: gold;
-            font-size: 16px;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .guarantee-title i {
-            margin-left: 8px;
-        }
-        
-        /* السعر والتسليم */
-        .price-delivery {
             text-align: center;
-            margin-top: auto;
+            margin-bottom: 3px;
+            font-weight: bold;
         }
         
-        .delivery-text {
-            color: #4CAF50;
-            font-size: 16px;
+        .image-subtitle {
+            color: #ddd;
+            font-size: 10px;
+            text-align: center;
             margin-bottom: 10px;
         }
         
-        .price {
-            color: gold;
-            font-size: 36px;
-            font-weight: bold;
-            margin: 10px 0;
+        /* الميزات */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
         }
         
-        .offer-text {
+        .feature {
             color: white;
-            font-size: 18px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            width: calc(50% - 5px);
         }
         
-        /* أجهزة التشغيل */
-        .devices {
+        .check {
+            color: gold;
+            margin-left: 4px;
+            font-size: 10px;
+        }
+        
+        /* الأجهزة */
+        .devices-small {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin: 15px 0;
+            gap: 10px;
+            margin: 8px 0;
             color: white;
-            font-size: 20px;
+            font-size: 12px;
         }
         
-        /* زر الشاهد */
-        .watch-btn {
+        /* الضمان */
+        .guarantee-small {
+            background: rgba(255, 215, 0, 0.1);
+            border-right: 2px solid gold;
+            padding: 6px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+        }
+        
+        .guarantee-title-small {
+            color: gold;
+            font-size: 10px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .guarantee-text-small {
+            color: white;
+            font-size: 9px;
+        }
+        
+        /* السعر */
+        .price-small {
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .delivery-small {
+            color: #4CAF50;
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .price-amount {
+            color: gold;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 3px 0;
+        }
+        
+        .offer-small {
+            color: white;
+            font-size: 11px;
+        }
+        
+        /* زر صغير */
+        .btn-small {
             background: #e50914;
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-top: 10px;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-top: 8px;
             cursor: pointer;
             display: block;
             margin-left: auto;
             margin-right: auto;
         }
-        
-        /* للشاشات الصغيرة */
-        @media (max-width: 650px) {
-            .netflix-card {
-                width: 95%;
-                height: auto;
-                min-height: 400px;
-            }
-            
-            .feature-item {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- تصميم الصورة -->
-    <div class="netflix-card">
-        <!-- الشريط الأحمر -->
-        <div class="header">
-            <div class="netflix-title">NET<span>F</span>LIX</div>
+    <!-- الصورة الصغيرة -->
+    <div class="netflix-image">
+        <div class="image-header">
+            <div class="logo">NET<span>F</span>LIX</div>
         </div>
         
-        <!-- محتوى الصورة -->
-        <div class="content">
-            <h2 class="main-heading">تقدم بكم إشتراك Netflix سنة كاملة</h2>
-            <p class="sub-heading">تجربة ترفيهية متكاملة بدون انقطاع</p>
+        <div class="image-content">
+            <div class="image-title">اشتراك Netflix سنة كاملة</div>
+            <div class="image-subtitle">تجربة ترفيهية متكاملة</div>
             
-            <!-- تفاصيل الاشتراك -->
-            <div class="details-section">
-                <h3 class="section-title">تفاصيل الاشتراك</h3>
-                <ul class="features-list">
-                    <li class="feature-item">
-                        <i class="fas fa-check check-mark"></i>
-                        سنة كاملة من المشاهدة المتواصلة
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check check-mark"></i>
-                        جودة 4K فائقة الوضوح
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check check-mark"></i>
-                        دعم اللغة العربية وجميع المحتويات
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check check-mark"></i>
-                        يعمل على جميع الأجهزة
-                    </li>
-                </ul>
+            <div class="features">
+                <div class="feature"><i class="fas fa-check check"></i> سنة كاملة مشاهدة</div>
+                <div class="feature"><i class="fas fa-check check"></i> جودة 4K فائقة</div>
+                <div class="feature"><i class="fas fa-check check"></i> دعم اللغة العربية</div>
+                <div class="feature"><i class="fas fa-check check"></i> جميع الأجهزة</div>
             </div>
             
-            <!-- أجهزة التشغيل -->
-            <div class="devices">
-                <i class="fas fa-mobile-alt" title="هاتف"></i>
-                <i class="fas fa-tv" title="تلفزيون"></i>
-                <i class="fas fa-laptop" title="كمبيوتر"></i>
+            <div class="devices-small">
+                <i class="fas fa-mobile-alt"></i>
+                <i class="fas fa-tv"></i>
+                <i class="fas fa-laptop"></i>
             </div>
             
-            <!-- الضمان الذهبي -->
-            <div class="guarantee-section">
-                <div class="guarantee-title">
-                    <i class="fas fa-shield-alt"></i>
-                    الضمان الذهبي
-                </div>
-                <p style="color: white; font-size: 14px;">تعويض كامل إذا توقف الحساب قبل إنتهاء المدة المتفق عليها</p>
+            <div class="guarantee-small">
+                <div class="guarantee-title-small"><i class="fas fa-shield-alt"></i> الضمان الذهبي</div>
+                <div class="guarantee-text-small">تعويض كامل إذا توقف الحساب</div>
             </div>
             
-            <!-- السعر والتسليم -->
-            <div class="price-delivery">
-                <div class="delivery-text">
-                    <i class="fas fa-shipping-fast"></i>
-                    تسليم فوري وضمان شهر كامل
-                </div>
-                
-                <div class="price">200 ريال</div>
-                <div class="offer-text">للاشتراك لمدة عام كامل!</div>
+            <div class="price-small">
+                <div class="delivery-small"><i class="fas fa-bolt"></i> تسليم فوري</div>
+                <div class="price-amount">200 ريال</div>
+                <div class="offer-small">للاشتراك لمدة عام كامل!</div>
             </div>
             
-            <!-- زر شاهد -->
-            <button class="watch-btn">
-                <i class="fas fa-play"></i>
-                شاهد
-            </button>
+            <button class="btn-small"><i class="fas fa-play"></i> شاهد</button>
+        </div>
+    </div>
+
+    <!-- نسخة أصغر للمقارنة -->
+    <div class="netflix-image" style="margin-left: 20px; width: 280px; height: 200px;">
+        <div class="image-header" style="height: 25px;">
+            <div class="logo" style="font-size: 16px;">NET<span>F</span>LIX</div>
+        </div>
+        
+        <div class="image-content" style="padding: 8px;">
+            <div class="image-title" style="font-size: 12px;">اشتراك Netflix سنوي</div>
+            <div class="image-subtitle" style="font-size: 9px;">ترفيه متكامل</div>
+            
+            <div class="features" style="margin-bottom: 5px;">
+                <div class="feature" style="font-size: 8px;"><i class="fas fa-check check" style="font-size: 8px;"></i> سنة مشاهدة</div>
+                <div class="feature" style="font-size: 8px;"><i class="fas fa-check check" style="font-size: 8px;"></i> جودة 4K</div>
+                <div class="feature" style="font-size: 8px;"><i class="fas fa-check check" style="font-size: 8px;"></i> عربي</div>
+                <div class="feature" style="font-size: 8px;"><i class="fas fa-check check" style="font-size: 8px;"></i> كل الأجهزة</div>
+            </div>
+            
+            <div class="guarantee-small" style="padding: 4px; margin-bottom: 5px;">
+                <div class="guarantee-title-small" style="font-size: 9px;"><i class="fas fa-shield-alt"></i> ضمان ذهبي</div>
+                <div class="guarantee-text-small" style="font-size: 8px;">تعويض كامل</div>
+            </div>
+            
+            <div class="price-small" style="margin-top: 3px;">
+                <div class="price-amount" style="font-size: 18px;">200 ريال</div>
+                <div class="offer-small" style="font-size: 9px;">اشتراك سنوي</div>
+            </div>
+            
+            <button class="btn-small" style="font-size: 9px; padding: 3px 8px; margin-top: 5px;"><i class="fas fa-play"></i> شاهد</button>
         </div>
     </div>
 
     <script>
-        // تفاعل بسيط مع زر شاهد
-        document.querySelector('.watch-btn').addEventListener('click', function() {
-            alert('سيتم توجيهك لتفعيل الاشتراك...');
-        });
-        
-        // تفاعل مع أيقونات الأجهزة
-        document.querySelectorAll('.devices i').forEach(icon => {
-            icon.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.3)';
-                this.style.color = 'gold';
-                this.style.transition = 'all 0.3s';
-            });
-            
-            icon.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-                this.style.color = 'white';
+        // تأثيرات بسيطة للتفاعل
+        document.querySelectorAll('.btn-small').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
             });
         });
     </script>
