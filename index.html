@@ -1,150 +1,366 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>اشتراك نتفليكس</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
-body{background:#0b0b0b;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}
-.container{
-  width:1080px;height:1920px;
-  position:relative;overflow:hidden;
-  background: radial-gradient(circle at top,#1a1a1a,#000 85%);
-  padding:60px;
-  display:flex;flex-direction:column;align-items:center;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NIKAI | فخامة الاشتراكات الرقمية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* وضع الليل الملكي */
+            --bg-main: #020205;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            --text-white: #ffffff;
+            --accent-color: #ffffff;
+            --brand-glow: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255,255,255,0.05);
+            --spring-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-/* Glow ديناميكي */
-.glow{
-  position:absolute;inset:0;
-  background:radial-gradient(circle at center,rgba(255,180,80,.1),transparent 70%);
-  pointer-events:none;
-  animation: glowPulse 4s ease-in-out infinite alternate;
-}
-@keyframes glowPulse{
-  0%{background:radial-gradient(circle at center,rgba(255,180,80,.08),transparent 70%);}
-  100%{background:radial-gradient(circle at center,rgba(255,220,100,.15),transparent 70%);}
-}
+        body.light-mode {
+            /* وضع النهار الكريستالي المحسن */
+            --bg-main: #f1f5f9;
+            --card-bg: #ffffff;
+            --card-border: rgba(255, 255, 255, 1);
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --text-white: #1e293b;
+            --accent-color: #2563eb;
+            --brand-glow: rgba(37, 99, 235, 0.15);
+            --input-bg: #ffffff;
+        }
 
-/* شعار Netflix مع FadeIn */
-.netflix-logo{
-  font-size:150px;font-weight:900;color:#e50914;
-  text-shadow:0 0 100px rgba(229,9,20,.95);
-  margin-top:20px;text-align:center;
-  opacity:0;animation:fadeIn 1s ease forwards;
-}
-@keyframes fadeIn{to{opacity:1;}}
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-white); 
+            transition: background 0.8s ease, color 0.5s ease;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-/* نص الاشتراك SlideIn */
-.header-text{
-  text-align:center;margin-top:20px;font-size:52px;font-weight:700;line-height:1.3;color:#fff;
-  opacity:0;transform:translateY(50px);
-  animation:slideUp 1s ease forwards 0.5s;
-}
-.header-text span{color:#e50914;}
-@keyframes slideUp{to{opacity:1;transform:translateY(0);}}
+        /* الخلفية المتحركة */
+        .mesh-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; filter: blur(100px); opacity: 0.6;
+            transition: 1.5s ease-in-out;
+        }
+        .blob {
+            position: absolute; width: 500px; height: 500px;
+            background: var(--brand-glow); border-radius: 50%;
+            transition: 1.5s; animation: float 25s infinite alternate;
+        }
+        .blob-1 { top: -150px; left: -150px; background: var(--accent-color); opacity: 0.3; }
+        .blob-2 { bottom: -150px; right: -150px; background: var(--brand-glow); }
 
-/* الضمان الذهبي مع Bounce */
-.guarantee{
-  margin-top:50px;
-  display:flex;align-items:center;gap:25px;
-  opacity:0;transform:translateY(50px);
-  animation:slideUp 1s ease forwards 1s;
-}
-.guarantee-icon{
-  width:90px;height:90px;
-  background:linear-gradient(180deg,#ffd95a,#b8860b);
-  border-radius:50%;
-  box-shadow:0 0 50px rgba(255,190,80,.85);
-  display:flex;align-items:center;justify-content:center;
-  font-size:40px;font-weight:900;color:#000;
-  animation:bounce 2s infinite alternate;
-}
-.guarantee-text{font-size:34px;color:#fff;font-weight:700;}
-@keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-10px);}}
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 150px) scale(1.2); }
+        }
 
-/* السعر مع Gradient متحرك */
-.price-section{
-  text-align:center;margin-top:70px;opacity:0;animation:slideUp 1s ease forwards 1.5s;
-}
-.price-section .price{
-  font-size:120px;font-weight:900;color:#ffdd88;
-  text-shadow:0 0 100px rgba(255,200,80,.95);
-  background: linear-gradient(90deg,#ffd95a,#ffcc66,#ffd95a);
-  background-size:200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation:gradientMove 3s ease infinite;
-}
-@keyframes gradientMove{0%{background-position:0%;}100%{background-position:200%;}}
-.price-section .subnote{font-size:38px;margin-top:15px;color:#f5f5f5;font-weight:600;}
+        .container { max-width: 550px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
 
-/* المميزات */
-.features{
-  margin-top:70px;text-align:center;font-size:38px;line-height:1.8;color:#fff;opacity:0;
-  animation:slideUp 1s ease forwards 2s;
-}
-.features span{
-  margin-left:15px;
-  color:#ffd95a;font-weight:900;
-  text-shadow:0 0 25px rgba(255,200,120,.75);
-}
+        /* شريط التنقل */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; }
+        .nav-pill { 
+            background: var(--card-bg); backdrop-filter: blur(25px);
+            padding: 10px 20px; border-radius: 50px; border: 1px solid var(--card-border);
+            display: flex; gap: 20px; box-shadow: var(--card-shadow);
+            transition: 0.3s;
+        }
+        .nav-pill i { cursor: pointer; transition: 0.3s; font-size: 19px; }
 
-/* زر واتساب مع Pulse */
-.whatsapp{
-  display:flex;justify-content:center;margin-top:90px;opacity:0;
-  animation:slideUp 1s ease forwards 2.5s;
-}
-.whatsapp a{
-  background:#25D366;color:#fff;font-size:42px;
-  padding:28px 65px;border-radius:60px;text-decoration:none;
-  display:flex;align-items:center;gap:20px;
-  box-shadow:0 0 80px rgba(37,211,102,.85);
-  transition:transform 0.5s ease, box-shadow 0.5s ease;
-  animation:pulse 2s infinite alternate;
-}
-.whatsapp a:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 120px rgba(37,211,102,1);
-}
-@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 80px rgba(37,211,102,.85);}100%{transform:scale(1.05);box-shadow:0 0 100px rgba(37,211,102,1);}}
-</style>
+        header { text-align: center; margin: 40px 0; }
+        header h1 { 
+            font-size: clamp(45px, 12vw, 70px); font-weight: 900; letter-spacing: 15px; 
+            background: linear-gradient(to bottom, var(--text-white), rgba(128,128,128,0.5));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--brand-glow));
+        }
+
+        /* الكروت */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .card { 
+            background: var(--card-bg); backdrop-filter: blur(30px);
+            border: 1px solid var(--card-border); border-radius: 32px;
+            padding: 30px 10px; cursor: pointer; transition: var(--spring-easing);
+            text-align: center; position: relative; overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .card:hover { 
+            transform: translateY(-12px) scale(1.03); 
+            border-color: var(--accent-color);
+            background: var(--card-bg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+        }
+        .card i { font-size: 34px; margin-bottom: 15px; transition: 0.4s; color: var(--text-white); }
+        .card span { display: block; font-size: 10px; font-weight: 800; opacity: 0.8; letter-spacing: 0.5px; }
+        .card.active { border-color: var(--accent-color); background: var(--card-bg); box-shadow: 0 0 20px var(--brand-glow); }
+
+        /* منطقة الطلب */
+        #checkout { display: none; margin-top: 40px; animation: slideIn 0.8s var(--spring-easing); }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+
+        .s-title { text-align: center; font-size: 32px; font-weight: 900; margin-bottom: 35px; color: var(--accent-color); }
+        
+        .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .plan-box { 
+            background: var(--card-bg); backdrop-filter: blur(15px);
+            border: 2px solid var(--card-border); padding: 25px 15px;
+            border-radius: 28px; cursor: pointer; text-align: center; transition: 0.4s;
+            position: relative; box-shadow: var(--card-shadow);
+        }
+        .badge-private {
+            position: absolute; top: 10px; left: 10px;
+            background: #ff3b30; color: #fff; font-size: 8px; font-weight: 900;
+            padding: 4px 10px; border-radius: 50px; text-transform: uppercase;
+        }
+
+        .plan-box.selected { 
+            background: var(--accent-color); color: #fff; 
+            border-color: var(--accent-color); transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--brand-glow);
+        }
+        .plan-box strong { font-size: 18px; display: block; margin-top: 8px; }
+
+        .bank-info-card { 
+            background: var(--card-bg); backdrop-filter: blur(40px);
+            border: 1px solid var(--card-border); padding: 35px;
+            border-radius: 40px; margin-top: 25px; box-shadow: var(--card-shadow);
+        }
+
+        .iban-container { margin: 25px 0; border-radius: 25px; overflow: hidden; border: 1px solid var(--card-border); box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+        .iban-box { background: rgba(0,0,0,0.05); padding: 20px; text-align: center; }
+        body.light-mode .iban-box { background: #f8fafc; }
+        .iban-box span { font-family: monospace; font-weight: 900; color: var(--accent-color); font-size: clamp(10px, 4vw, 15px); word-break: break-all; }
+        
+        .copy-btn {
+            width: 100%; background: var(--accent-color); color: #fff;
+            border: none; padding: 18px; font-weight: 900; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;
+        }
+
+        .btn-wa { 
+            width: 100%; background: #25d366; color: #fff; padding: 22px; 
+            border-radius: 25px; border: none; font-weight: 900; font-size: 19px; 
+            cursor: pointer; transition: 0.4s; box-shadow: 0 15px 30px rgba(37, 211, 102, 0.3);
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        
+        /* تحسين حقل الإيميل في وضع النهار */
+        #u-email {
+            width:100%; padding:22px; border-radius:28px; 
+            border:2px solid var(--card-border); 
+            background: var(--input-bg); 
+            color:var(--text-white); 
+            text-align:center; outline:none; 
+            font-family:inherit; font-weight:700;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* القائمة الجانبية */
+        .drawer { 
+            position: fixed; top: 20px; right: -360px; width: 320px; height: calc(100% - 40px);
+            background: var(--card-bg); backdrop-filter: blur(40px);
+            z-index: 2000; transition: 0.8s var(--spring-easing); 
+            border-radius: 40px; padding: 45px; border: 1px solid var(--card-border);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+        }
+        .drawer.active { right: 20px; }
+        .drawer-item-link { display: flex; align-items: center; gap: 12px; color: var(--text-white); text-decoration: none; margin-bottom: 20px; font-weight: 700; }
+        
+        .toast { 
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); 
+            background: var(--accent-color); color: #fff; padding: 18px 45px; 
+            border-radius: 60px; font-weight: 900; display: none; z-index: 3000;
+        }
+
+        footer { text-align: center; padding: 60px 0; opacity: 0.6; font-weight: 800; font-size: 13px; border-top: 1px solid var(--card-border); }
+    </style>
 </head>
-<body>
+<body class="ar">
 
-<div class="container">
-  <div class="glow"></div>
+    <div class="mesh-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
-  <div class="netflix-logo">NETFLIX</div>
+    <div class="overlay" id="overlay" onclick="closeDrawer()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.2); display:none; z-index:1500; backdrop-filter:blur(10px);"></div>
+    <div class="toast" id="toast">تم النسخ بنجاح ✅</div>
 
-  <div class="header-text">
-    اشتراك <span>نتفليكس</span> لمدة سنة كاملة
-  </div>
+    <div class="drawer" id="drawer">
+        <div style="display:flex; justify-content:space-between; margin-bottom:50px;">
+            <span style="opacity:0.5; font-weight:900; letter-spacing:2px;">NIKAI MENU</span>
+            <i class="fas fa-times" onclick="closeDrawer()" style="cursor:pointer; font-size:24px;"></i>
+        </div>
+        <div style="border-right: 4px solid var(--accent-color); padding-right:15px; margin-bottom:30px;">
+            <h3 style="font-weight:900; font-size:22px;">لماذا تختارنا؟</h3>
+        </div>
+        <p style="margin-bottom:20px; font-weight:600; font-size:15px;">🚀 تفعيل فوري ومضمون.</p>
+        <p style="margin-bottom:20px; font-weight:600; font-size:15px;">📞 دعم فني على مدار الساعة.</p>
+        <div style="border-right: 4px solid var(--accent-color); padding-right:15px; margin:50px 0 20px;">
+            <h3 style="font-weight:900; font-size:22px;">تواصل معنا</h3>
+        </div>
+        <a href="mailto:iioe@outlook.sa" class="drawer-item-link"><i class="fas fa-envelope"></i> iioe@outlook.sa</a>
+        <a href="tel:0591388202" class="drawer-item-link"><i class="fas fa-phone"></i> 0591388202</a>
+    </div>
 
-  <div class="guarantee">
-    <div class="guarantee-icon">✓</div>
-    <div class="guarantee-text">الضمان الذهبي – تعويض كامل عند أي مشكلة</div>
-  </div>
+    <div class="container">
+        <nav class="top-nav">
+            <div class="nav-pill">
+                <i id="theme-icon" class="fas fa-moon" onclick="toggleTheme()"></i>
+                <i class="fas fa-globe" onclick="toggleLang()"></i>
+            </div>
+            <div class="nav-pill">
+                <i class="fas fa-bars" onclick="openDrawer()"></i>
+            </div>
+        </nav>
 
-  <div class="price-section">
-    <div class="price">200 ريال</div>
-    <div class="subnote">لاشتراك لمدة عام كامل</div>
-  </div>
+        <header>
+            <h1>NIKAI</h1>
+            <p id="txt-sub-header" style="opacity:0.7; font-weight:700;">متجر متخصص اشتراكات الرقميه اطلب اشتراكك الان</p>
+        </header>
 
-  <div class="features">
-    <p><span>✓</span> دعم جودة 4K فائقة الوضوح</p>
-    <p><span>✓</span> يعمل على جميع الأجهزة</p>
-    <p><span>✓</span> الحساب ملف خاص</p>
-  </div>
+        <div class="grid" id="mainGrid"></div>
 
-  <div class="whatsapp">
-    <a href="https://wa.me/966591388202" target="_blank">
-      واتساب للتواصل: 0591388202
-    </a>
-  </div>
+        <section id="checkout">
+            <h2 id="s-title" class="s-title"></h2>
+            <div id="s-plans" class="plans-grid"></div>
+            
+            <div id="email-area" style="margin-bottom:35px; display:none;">
+                <label style="display:block; text-align:center; margin-bottom:15px; font-weight:900;">البريد الإلكتروني للتفعيل:</label>
+                <input type="email" id="u-email" placeholder="mail@example.com">
+            </div>
 
-</div>
+            <div class="bank-info-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-weight:900; opacity:0.8;">
+                    <span>البنك:</span><span>بنك البلاد</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-weight:900; opacity:0.8;">
+                    <span>المستفيد:</span><span>سليمان فلاته</span>
+                </div>
+                
+                <div class="iban-container">
+                    <div class="iban-box">
+                        <span id="iban-val">SA0315000900133520020007</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyIBAN()">
+                        <i class="fas fa-copy"></i> نسخ رقم الآيبان
+                    </button>
+                </div>
 
+                <button class="btn-wa" onclick="sendOrder()">
+                    <i class="fab fa-whatsapp"></i> تأكيد الطلب عبر واتساب
+                </button>
+            </div>
+        </section>
+
+        <footer>
+            <p>جميع الحقوق محفوظة لمتجر NIKAI © 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentLang = 'ar';
+        const products = [
+            { id: 'osn', icon: 'fas fa-plus-circle', name: {ar:'اشتراك OSN+', en:'Subscription OSN+'}, color: '#FF007F', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Month (Private)'}, p:'20'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'110'}] },
+            { id: 'canva', icon: 'fas fa-pen-nib', name: {ar:'اشتراك Canva Pro', en:'Subscription Canva Pro'}, color: '#00C4CC', plans: [{l:{ar:'مدى الحياة',en:'Lifetime'}, p:'35'}] },
+            { id: 'shahid', icon: 'fas fa-play-circle', name: {ar:'اشتراك شاهد VIP رياضي', en:'Subscription Shahid VIP Sports'}, color: '#00D084', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Month (Private)'}, p:'29'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'180'}] },
+            { id: 'netflix', icon: 'fas fa-film', name: {ar:'اشتراك Netflix', en:'Subscription Netflix'}, color: '#E50914', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Month (Private)'}, p:'20'}, {l:{ar:'سنة',en:'1 Year'}, p:'200'}] },
+            { id: 'youtube', icon: 'fab fa-youtube', name: {ar:'اشتراك YouTube Premium', en:'Subscription YouTube Premium'}, color: '#FF0000', email:true, plans: [{l:{ar:'دعوة سنة',en:'1Y Invitation'}, p:'200'}, {l:{ar:'فردي سنة',en:'1Y Individual'}, p:'350'}] },
+            { id: 'office', icon: 'fas fa-file-word', name: {ar:'اشتراك Office 365', en:'Subscription Office 365'}, color: '#D83B01', plans: [{l:{ar:'تفعيل رقمي',en:'Activation'}, p:'39'}] },
+            { id: 'crunchy', icon: 'fas fa-tv', name: {ar:'اشتراك Crunchyroll', en:'Subscription Crunchyroll'}, color: '#F47521', plans: [{l:{ar:'سنة',en:'1 Year'}, p:'50'}] },
+            { id: 'fasel', icon: 'fas fa-bolt', name: {ar:'اشتراك Fasel Plus', en:'Subscription Fasel Plus'}, color: '#FFC107', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Month (Private)'}, p:'13'}, {l:{ar:'سنة',en:'1 Year'}, p:'150'}] },
+            { id: 'chatgpt', icon: 'fas fa-robot', name: {ar:'اشتراك ChatGPT', en:'Subscription ChatGPT'}, color: '#10A37F', plans: [{l:{ar:'شهر',en:'1 Month'}, p:'10'}, {l:{ar:'سنة',en:'1 Year'}, p:'100'}] }
+        ];
+
+        let currentProduct = null;
+        let currentSelectedPlan = null;
+
+        function initGrid() {
+            document.getElementById('mainGrid').innerHTML = products.map(p => `
+                <div class="card" id="card-${p.id}" onclick="selectProduct('${p.id}')">
+                    <i class="${p.icon}" style="${currentProduct && currentProduct.id === p.id ? 'color:'+p.color : ''}"></i>
+                    <span>${p.name[currentLang]}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectProduct(id) {
+            currentProduct = products.find(p => p.id === id);
+            document.documentElement.style.setProperty('--accent-color', currentProduct.color);
+            document.documentElement.style.setProperty('--brand-glow', currentProduct.color + '44');
+
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.remove('active');
+                c.querySelector('i').style.color = '';
+            });
+            const activeCard = document.getElementById('card-' + id);
+            activeCard.classList.add('active');
+            activeCard.querySelector('i').style.color = currentProduct.color;
+
+            const box = document.getElementById('checkout');
+            box.style.display = 'block';
+            currentSelectedPlan = null;
+            renderOrderArea();
+            
+            setTimeout(() => { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+        }
+
+        function renderOrderArea() {
+            document.getElementById('s-title').innerText = currentProduct.name[currentLang];
+            document.getElementById('s-plans').innerHTML = currentProduct.plans.map((plan, i) => `
+                <div class="plan-box ${(!currentSelectedPlan && i===0) || (currentSelectedPlan && currentSelectedPlan.p === plan.p) ? 'selected' : ''}" onclick="selectPlan(this, '${plan.l[currentLang]}', '${plan.p}')">
+                    ${(currentProduct.isPrivate && plan.l[currentLang].includes('شهر')) ? '<span class="badge-private">خاص</span>' : ''}
+                    <span>${plan.l[currentLang]}</span><strong>${plan.p} ${currentLang==='ar'?'ريال':'SAR'}</strong>
+                </div>
+            `).join('');
+            if(!currentSelectedPlan) currentSelectedPlan = {l: currentProduct.plans[0].l[currentLang], p: currentProduct.plans[0].p};
+            document.getElementById('email-area').style.display = currentProduct.email ? 'block' : 'none';
+        }
+
+        function selectPlan(el, l, p) {
+            document.querySelectorAll('.plan-box').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            currentSelectedPlan = {l, p};
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('theme-icon');
+            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.body.className = currentLang + (document.body.classList.contains('light-mode') ? ' light-mode' : '');
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            initGrid();
+            if(currentProduct) renderOrderArea();
+        }
+
+        function copyIBAN() {
+            navigator.clipboard.writeText("SA0315000900133520020007");
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        function openDrawer() { document.getElementById('drawer').classList.add('active'); document.getElementById('overlay').style.display = 'block'; }
+        function closeDrawer() { document.getElementById('drawer').classList.remove('active'); document.getElementById('overlay').style.display = 'none'; }
+
+        function sendOrder() {
+            const email = document.getElementById('u-email').value;
+            let msg = `طلب جديد: ${currentProduct.name[currentLang]} (${currentSelectedPlan.l}) السعر: ${currentSelectedPlan.p} ريال`;
+            if(email) msg += ` - البريد: ${email}`;
+            window.open(`https://wa.me/966591388202?text=${encodeURIComponent(msg)}`);
+        }
+
+        initGrid();
+    </script>
 </body>
 </html>
