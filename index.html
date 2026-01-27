@@ -1,792 +1,878 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="متجر NIKAI متخصص في اشتراكات رقمية عالية الجودة. اشتري اشتراكات OSN+, Netflix, YouTube Premium وأكثر بأفضل الأسعار مع نظام تتبع للطلبات.">
-    <meta name="keywords" content="اشتراكات رقمية, اشتراكات OSN, اشتراكات Netflix, اشتراكات YouTube">
-    <title>NIKAI | فخامة الرقمية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@600;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-main: #010103;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --accent-color: #ffffff;
-            --brand-glow: rgba(255, 255, 255, 0.1);
-            --shadow: 0 20px 40px rgba(0,0,0,0.6);
-            --logo-gradient: linear-gradient(to bottom, #ffffff, #666666);
-            --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --transition-speed: 0.4s;
-        }
+import { useEffect, useMemo, useRef, useState } from "react";
+import { faq } from "@/data/faq";
+import { testimonials } from "@/data/testimonials";
+import { IBAN, products, WHATSAPP_NUMBER, type Lang, type Product } from "@/data/products";
+import { generateTrackingCode, migrateOrders } from "@/lib/orders";
+import { getJSON, setJSON } from "@/lib/storage";
+import type { Order, Theme } from "@/lib/types";
 
-        body.light-mode {
-            --bg-main: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --card-border: rgba(0, 0, 0, 0.06);
-            --text-main: #0f172a;
-            --accent-color: #2563eb;
-            --brand-glow: rgba(37, 99, 235, 0.1);
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            --logo-gradient: linear-gradient(to bottom, #111827, #4b5563);
-        }
+type View = "store" | "about" | "contact" | "orders" | "faq" | "reviews";
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Cairo', 'Poppins', sans-serif; 
-            background-color: var(--bg-main); 
-            color: var(--text-main); 
-            transition: background 0.8s ease, color 0.5s ease;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+type ToastState = { open: boolean; message: string };
 
-        /* خلفية Mesh Gradient */
-        .mesh-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden; filter: blur(100px); opacity: 0.6;
-            transition: 1.5s var(--spring);
-        }
-        .blob {
-            position: absolute; border-radius: 50%;
-            transition: 1.5s var(--spring); animation: float 20s infinite alternate;
-        }
-        .blob-1 { width: 500px; height: 500px; top: -10%; left: -10%; background: var(--brand-glow); opacity: 0.3; }
-        .blob-2 { width: 400px; height: 400px; bottom: -5%; right: -5%; background: var(--accent-color); opacity: 0.2; }
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 60px) scale(1.1); } }
+const LS = {
+  theme: "nikai_theme",
+  lang: "nikai_lang",
+  orders: "orders",
+} as const;
 
-        .container { max-width: 550px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
+const i18n = {
+  ar: {
+    subtitle: "متجر متخصص اشتراكات رقميّة — اطلب اشتراكك الآن",
 
-        /* منصة التحكم الزجاجية العلوية - حل التداخل */
-        .glass-dock {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            padding: 5px;
-            gap: 4px;
-            box-shadow: var(--shadow);
-            z-index: 2000;
-            transition: var(--transition-speed) var(--spring);
-        }
-        body.en .glass-dock { right: auto; left: 20px; }
+    menu: "القائمة",
+    store: "المتجر",
+    about: "من نحن",
+    contactTitle: "تواصل معنا",
+    orders: "طلباتي",
+    faq: "الأسئلة الشائعة",
+    reviews: "آراء العملاء",
 
-        .dock-item {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-main);
-            transition: var(--transition-speed) var(--spring);
-        }
-        .dock-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.1); }
-        .dock-separator { width: 1px; height: 18px; background: var(--card-border); margin: 0 2px; }
+    why: "لماذا تختارنا؟",
+    why1: "🚀 تفعيل فوري ومضمون.",
+    why2: "📞 دعم فني 24/7.",
+    contact: "تواصل معنا",
 
-        /* زر القائمة */
-        .menu-wrapper { position: fixed; top: 20px; left: 20px; z-index: 2000; }
-        body.en .menu-wrapper { left: auto; right: 20px; }
-        .menu-btn-glass {
-            width: 50px; height: 50px;
-            background: var(--card-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: var(--shadow); color: var(--text-main);
-            transition: var(--transition-speed) var(--spring);
-        }
+    searchPlaceholder: "ابحث عن اشتراك...",
 
-        /* الهيدر - حل مشكلة التداخل */
-        header { 
-            text-align: center; 
-            margin-top: 100px; /* مسافة كافية لمنع ملامسة الأزرار العلوية */
-            margin-bottom: 40px; 
-        }
-        header h1 { 
-            font-size: clamp(38px, 12vw, 65px); /* حجم خط مرن */
-            font-weight: 900; 
-            letter-spacing: 12px; 
-            background: var(--logo-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transition: 0.5s;
-        }
-        @media (max-width: 480px) {
-            header { margin-top: 110px; }
-            header h1 { letter-spacing: 6px; } /* تقليل التباعد في الجوال لمنع التداخل العرضي */
-        }
-        header p { font-size: 13px; opacity: 0.7; font-weight: 700; margin-top: 10px; padding: 0 10px; }
+    bank: "البنك:",
+    beneficiary: "المستفيد:",
+    copyIban: "نسخ الآيبان",
+    confirmOrder: "تأكيد الطلب",
+    activationEmail: "بريد التفعيل:",
+    emailPlaceholder: "mail@example.com",
+    requiredEmail: "يرجى إدخال البريد الإلكتروني",
 
-        /* الشبكة */
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-        .card { 
-            background: var(--card-bg); backdrop-filter: blur(30px);
-            border: 1px solid var(--card-border); border-radius: 28px;
-            padding: 25px 10px; cursor: pointer; transition: var(--transition-speed) var(--spring);
-            text-align: center; box-shadow: var(--shadow);
-            opacity: 0; transform: translateY(20px);
-        }
-        .card.show { opacity: 1; transform: translateY(0); }
-        .card:hover { transform: translateY(-8px) scale(1.04); border-color: var(--accent-color); }
-        .card i { font-size: 32px; margin-bottom: 12px; color: var(--text-main); transition: var(--transition-speed); }
-        .card span { display: block; font-size: 10px; font-weight: 800; }
-        .card.active { border-color: var(--accent-color); background: rgba(255,255,255,0.05); }
+    copied: "تم النسخ بنجاح ✅",
 
-        /* منطقة الطلب */
-        #checkout { display: none; margin-top: 30px; animation: slideUp 0.8s var(--spring); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+    aboutBody:
+      "متجر NIKAI متخصص في توفير اشتراكات رقمية عالية الجودة بأفضل الأسعار. فريقنا ملتزم بتقديم أفضل تجربة عملاء مع دعم فني متواصل.",
+    feature1Title: "جودة عالية",
+    feature1Body: "منتجات معتمدة وموثوقة",
+    feature2Title: "دعم 24/7",
+    feature2Body: "فريق دعم متواجد على مدار الساعة",
 
-        .s-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 25px; color: var(--accent-color); }
-        .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0; }
-        .plan-box { 
-            background: var(--card-bg); border: 2px solid var(--card-border); padding: 20px 10px;
-            border-radius: 22px; cursor: pointer; text-align: center; transition: var(--transition-speed) var(--spring);
-            position: relative;
-        }
-        .plan-box.selected { background: var(--accent-color); color: #fff; transform: translateY(-5px); box-shadow: 0 10px 20px var(--brand-glow); }
-        .badge-private { position: absolute; top: 8px; left: 8px; background: #fff; color: #000; font-size: 8px; font-weight: 900; padding: 3px 8px; border-radius: 50px; }
+    email: "البريد الإلكتروني",
+    calls: "المكالمات",
 
-        .bank-info-card { background: var(--card-bg); backdrop-filter: blur(40px); border: 1px solid var(--card-border); padding: 30px; border-radius: 35px; box-shadow: var(--shadow); }
-        .bank-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 700; font-size: 14px; }
+    footer: "جميع الحقوق محفوظة لمتجر NIKAI © 2024",
 
-        .copy-iban-btn { width: 100%; background: var(--accent-color); color: #fff; border: none; padding: 15px; border-radius: 0 0 18px 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
-        .btn-wa { width: 100%; background: #25d366; color: #fff; padding: 20px; border-radius: 25px; border: none; font-weight: 900; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 15px; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); font-family: inherit; }
+    statusCompleted: "تم التفعيل",
+    statusPending: "قيد التنفيذ",
 
-        .drawer { position: fixed; top: 20px; right: -360px; width: 310px; height: calc(100% - 40px); background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(40px); z-index: 2500; transition: 0.6s var(--spring); border-radius: 35px; padding: 40px; border: 1px solid var(--card-border); }
-        body.en .drawer { right: auto; left: -360px; }
-        .drawer.active { right: 20px; }
-        body.en .drawer.active { left: 20px; }
+    orderCreated: "تم إنشاء الطلب",
 
-        .overlay { position: fixed; top: 0; left: 0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:2400; backdrop-filter:blur(8px); }
-        footer { text-align: center; padding: 50px 0; opacity: 0.5; font-size: 11px; border-top: 1px solid var(--card-border); }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--accent-color); color: #fff; padding: 12px 30px; border-radius: 50px; font-weight: 700; display: none; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-size: 14px; }
-        
-        /* أقسام جديدة */
-        #about-us, #contact-us, #dashboard { display: none; margin-top: 50px; }
-        .section-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 25px; color: var(--accent-color); }
-        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
-        .feature-card { text-align: center; padding: 15px; }
-        .feature-card i { font-size: 32px; margin-bottom: 10px; color: var(--accent-color); }
-        .testimonials-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
-        .testimonial-card { background: var(--card-bg); padding: 20px; border-radius: 20px; }
-        .stars { color: #FFD700; margin-bottom: 5px; }
-        
-        /* نافذة تسجيل الدخول */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 4000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-box {
-            background: var(--card-bg);
-            border-radius: 25px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .modal-box h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-        .modal-box input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 15px;
-            border: 1px solid var(--card-border);
-            background: transparent;
-            color: var(--text-main);
-        }
-        .modal-box button {
-            width: 100%;
-            padding: 15px;
-            border-radius: 15px;
-            background: var(--accent-color);
-            color: #fff;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        /* لوحة التحكم */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .welcome-message {
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .logout-btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        .order-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-        }
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        .order-status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        .status-active {
-            background: rgba(0, 128, 0, 0.1);
-            color: #008000;
-        }
-        .status-pending {
-            background: rgba(255, 165, 0, 0.1);
-            color: #FFA500;
-        }
-    </style>
-</head>
-<body class="ar">
+    ordersTitle: "طلباتك (منتج رقمي — بدون توصيل)",
+    ordersHint:
+      "هذا سجل محلي على نفس الجهاز. بعد تأكيد الطلب عبر واتساب سيظهر رقم الطلب ويمكنك نسخّه والاستفسار عن حالة التفعيل.",
+    noOrders: "لا يوجد طلبات سابقة",
+    clearOrders: "مسح السجل",
+    clearConfirm: "هل أنت متأكد من مسح جميع الطلبات؟",
 
-    <div class="mesh-container">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-    </div>
+    orderNumber: "رقم الطلب",
+    copyOrderNumber: "نسخ رقم الطلب",
+    askWhatsapp: "استفسار واتساب",
 
-    <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
-    <div class="toast" id="toast">تم النسخ بنجاح ✅</div>
+    digitalDeliveryNote: "المنتج رقمي — يتم إرسال بيانات التفعيل بعد الدفع.",
+  },
+  en: {
+    subtitle: "Digital Subscriptions — Order Now",
 
-    <!-- منصة التحكم العلوي -->
-    <div class="glass-dock">
-        <div class="dock-item" onclick="toggleTheme()">
-            <i id="theme-icon" class="fas fa-moon"></i>
+    menu: "Menu",
+    store: "Store",
+    about: "About",
+    contactTitle: "Contact",
+    orders: "My Orders",
+    faq: "FAQ",
+    reviews: "Reviews",
+
+    why: "Why Us?",
+    why1: "🚀 Instant Activation.",
+    why2: "📞 24/7 Support.",
+    contact: "Contact Us",
+
+    searchPlaceholder: "Search subscriptions...",
+
+    bank: "Bank:",
+    beneficiary: "Beneficiary:",
+    copyIban: "Copy IBAN",
+    confirmOrder: "Confirm Order",
+    activationEmail: "Activation Email:",
+    emailPlaceholder: "mail@example.com",
+    requiredEmail: "Please enter email",
+
+    copied: "Copied Successfully ✅",
+
+    aboutBody:
+      "NIKAI provides high-quality digital subscriptions at the best prices. We focus on premium customer experience with continuous support.",
+    feature1Title: "High Quality",
+    feature1Body: "Trusted, verified subscriptions",
+    feature2Title: "24/7 Support",
+    feature2Body: "Always available support team",
+
+    email: "Email",
+    calls: "Calls",
+
+    footer: "All Rights Reserved to NIKAI STORE © 2024",
+
+    statusCompleted: "Activated",
+    statusPending: "In progress",
+
+    orderCreated: "Order created",
+
+    ordersTitle: "Your orders (Digital product — no shipping)",
+    ordersHint:
+      "This is a local history on this device. After WhatsApp confirmation, you’ll get an order number you can copy and use for activation status inquiries.",
+    noOrders: "No previous orders",
+    clearOrders: "Clear history",
+    clearConfirm: "Are you sure you want to clear all orders?",
+
+    orderNumber: "Order No.",
+    copyOrderNumber: "Copy order no.",
+    askWhatsapp: "Ask on WhatsApp",
+
+    digitalDeliveryNote: "Digital product — activation details are sent after payment.",
+  },
+} satisfies Record<Lang, Record<string, string>>;
+
+function formatSar(lang: Lang, value: number) {
+  return lang === "ar" ? `${value} ريال` : `${value} SAR`;
+}
+
+function buildOrderWhatsappMessage(
+  lang: Lang,
+  product: Product,
+  planLabel: string,
+  priceSar: number,
+  orderNumber: string,
+  email?: string
+) {
+  const isAr = lang === "ar";
+  const lines = [
+    isAr ? "طلب اشتراك رقمي:" : "Digital subscription order:",
+    `- ${product.name[lang]}`,
+    `${isAr ? "- الباقة" : "- Plan"}: ${planLabel}`,
+    `${isAr ? "- السعر" : "- Price"}: ${priceSar}`,
+    `${isAr ? "- رقم الطلب" : "- Order No."}: ${orderNumber}`,
+  ];
+  if (email) lines.push(`${isAr ? "- الإيميل" : "- Email"}: ${email}`);
+  return lines.join("\n");
+}
+
+export function App() {
+  const [lang, setLang] = useState<Lang>(() => getJSON<Lang>(LS.lang, "ar"));
+  const [theme, setTheme] = useState<Theme>(() => getJSON<Theme>(LS.theme, "dark"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [view, setView] = useState<View>("store");
+
+  const [query, setQuery] = useState("");
+
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const selectedProduct = useMemo(
+    () => products.find((p) => p.id === selectedProductId) ?? null,
+    [selectedProductId]
+  );
+
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
+  const selectedPlan = selectedProduct?.plans[selectedPlanIndex] ?? null;
+
+  const [email, setEmail] = useState("");
+  const [toast, setToast] = useState<ToastState>({ open: false, message: "" });
+
+  const [orders, setOrders] = useState<Order[]>(() => migrateOrders(getJSON<unknown>(LS.orders, [])));
+
+  const checkoutRef = useRef<HTMLDivElement | null>(null);
+
+  const t = i18n[lang];
+
+  // Persist + apply document direction/classes
+  useEffect(() => {
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
+    document.body.classList.toggle("en", lang === "en");
+    document.body.classList.toggle("ar", lang === "ar");
+    setJSON(LS.lang, lang);
+  }, [lang]);
+
+  useEffect(() => {
+    document.body.classList.toggle("light-mode", theme === "light");
+    setJSON(LS.theme, theme);
+  }, [theme]);
+
+  useEffect(() => {
+    setJSON(LS.orders, orders);
+  }, [orders]);
+
+  // Accent color based on selected product (fallback depends on theme)
+  useEffect(() => {
+    const fallback = theme === "light" ? "#2563eb" : "#ffffff";
+    const accent = selectedProduct?.color ?? fallback;
+    document.documentElement.style.setProperty("--accent-color", accent);
+    document.documentElement.style.setProperty("--brand-glow", `${accent}44`);
+  }, [selectedProduct, theme]);
+
+  // Reset plan/email when switching product
+  useEffect(() => {
+    setSelectedPlanIndex(0);
+    setEmail("");
+  }, [selectedProductId]);
+
+  // Scroll to checkout
+  useEffect(() => {
+    if (selectedProductId && view === "store") {
+      window.setTimeout(() => checkoutRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+    }
+  }, [selectedProductId, view]);
+
+  // Escape to close drawer
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setDrawerOpen(false);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  function showToast(message: string) {
+    setToast({ open: true, message });
+    window.setTimeout(() => setToast((s) => ({ ...s, open: false })), 2500);
+  }
+
+  async function copyText(value: string, toastMsg?: string) {
+    try {
+      await navigator.clipboard.writeText(value);
+      showToast(toastMsg ?? t.copied);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = value;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast(toastMsg ?? t.copied);
+    }
+  }
+
+  function openDrawer() {
+    setDrawerOpen(true);
+  }
+
+  function closeDrawer() {
+    setDrawerOpen(false);
+  }
+
+  function toggleTheme() {
+    setTheme((v) => (v === "light" ? "dark" : "light"));
+  }
+
+  function toggleLang() {
+    setLang((v) => (v === "ar" ? "en" : "ar"));
+  }
+
+  function goto(v: View) {
+    setView(v);
+    closeDrawer();
+  }
+
+  function onSelectProduct(id: string) {
+    setView("store");
+    setSelectedProductId(id);
+  }
+
+  function addOrder(productId: string, planLabel: Record<Lang, string>, priceSar: number, customerEmail?: string): Order {
+    const orderNumber = generateTrackingCode();
+    const now = new Date();
+
+    const order: Order = {
+      id: Date.now(),
+      trackingCode: orderNumber,
+      productId,
+      planLabel,
+      priceSar,
+      status: "pending",
+      dateIso: now.toISOString(),
+      customerEmail,
+      customerType: "guest",
+    };
+
+    setOrders((prev) => [order, ...prev]);
+    return order;
+  }
+
+  function confirmOrder() {
+    if (!selectedProduct || !selectedPlan) return;
+
+    const emailValue = email.trim() || undefined;
+
+    if (selectedProduct.needsEmail && !emailValue) {
+      showToast(t.requiredEmail);
+      return;
+    }
+
+    const created = addOrder(selectedProduct.id, selectedPlan.label, selectedPlan.priceSar, emailValue);
+
+    showToast(`${t.orderCreated} • ${created.trackingCode}`);
+
+    const msg = buildOrderWhatsappMessage(
+      lang,
+      selectedProduct,
+      selectedPlan.label[lang],
+      selectedPlan.priceSar,
+      created.trackingCode,
+      emailValue
+    );
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+
+    setView("orders");
+  }
+
+  const filteredProducts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return products;
+    return products.filter((p) => {
+      const name = p.name[lang].toLowerCase();
+      return name.includes(q) || p.id.toLowerCase().includes(q);
+    });
+  }, [query, lang]);
+
+  return (
+    <div className="min-h-screen">
+      {/* Background */}
+      <div className="mesh-container" aria-hidden>
+        <div className="blob blob-1" />
+        <div className="blob blob-2" />
+      </div>
+
+      {/* Overlay */}
+      <div className={"overlay " + (drawerOpen ? "show" : "")} onClick={closeDrawer} />
+
+      {/* Toast */}
+      <div className={"toast " + (toast.open ? "show" : "")} role="status" aria-live="polite">
+        {toast.message}
+      </div>
+
+      {/* Top Dock */}
+      <div className="glass-dock" role="navigation" aria-label="Quick actions">
+        <button
+          className="dock-item"
+          onClick={toggleTheme}
+          aria-label={theme === "light" ? "Switch to dark" : "Switch to light"}
+        >
+          <i className={theme === "light" ? "fas fa-sun" : "fas fa-moon"} />
+        </button>
+        <div className="dock-separator" />
+        <button className="dock-item" onClick={toggleLang} aria-label="Toggle language">
+          <i className="fas fa-language" />
+        </button>
+        <div className="dock-separator" />
+        <button
+          className="dock-item"
+          onClick={() => setView("orders")}
+          aria-label={t.orders}
+          title={t.orders}
+        >
+          <i className="fas fa-receipt" />
+        </button>
+      </div>
+
+      {/* Menu */}
+      <div className="menu-wrapper">
+        <button className="menu-btn-glass" onClick={openDrawer} aria-label="Menu">
+          <i className="fas fa-bars" />
+        </button>
+      </div>
+
+      {/* Drawer */}
+      <aside className={"drawer " + (drawerOpen ? "open" : "")} aria-label="Drawer">
+        <div className="mb-10 flex items-center justify-between">
+          <span className="text-sm font-black opacity-60">{t.menu}</span>
+          <button onClick={closeDrawer} className="text-xl" aria-label="Close">
+            <i className="fas fa-times" />
+          </button>
         </div>
-        <div class="dock-separator"></div>
-        <div class="dock-item" onclick="toggleLang()">
-            <i class="fas fa-language"></i>
-        </div>
-        <div class="dock-separator"></div>
-        <div class="dock-item" onclick="showLoginModal()">
-            <i class="fas fa-user"></i>
-        </div>
-    </div>
 
-    <div class="menu-wrapper">
-        <div class="menu-btn-glass" onclick="openDrawer()">
-            <i class="fas fa-bars"></i>
+        <div
+          className={(lang === "ar" ? "border-r-4 pr-4" : "border-l-4 pl-4") + " mb-6"}
+          style={{ borderColor: "var(--accent-color)" }}
+        >
+          <h3 className="text-xl font-black">{t.why}</h3>
         </div>
-    </div>
+        <p className="mb-3 text-sm font-semibold">{t.why1}</p>
+        <p className="mb-6 text-sm font-semibold">{t.why2}</p>
 
-    <div class="drawer" id="drawer">
-        <div style="display:flex; justify-content:space-between; margin-bottom:40px;">
-            <span style="opacity:0.5; font-weight:900;" id="txt-menu">القائمة</span>
-            <i class="fas fa-times" onclick="closeDrawer()" style="cursor:pointer; font-size:22px;"></i>
+        <div
+          className={(lang === "ar" ? "border-r-4 pr-4" : "border-l-4 pl-4") + " my-10"}
+          style={{ borderColor: "var(--accent-color)" }}
+        >
+          <h3 className="text-xl font-black">{t.contact}</h3>
         </div>
-        <div style="border-right: 4px solid var(--accent-color); padding-right:15px; margin-bottom:25px;" id="why-border">
-            <h3 id="txt-why" style="font-weight:900; font-size:20px;">لماذا تختارنا؟</h3>
-        </div>
-        <p id="txt-why-1" style="margin-bottom:12px; font-weight:600; font-size:14px;">🚀 تفعيل فوري ومضمون.</p>
-        <p id="txt-why-2" style="margin-bottom:12px; font-weight:600; font-size:14px;">📞 دعم فني 24/7.</p>
-        <div style="border-right: 4px solid var(--accent-color); padding-right:15px; margin:40px 0 20px;" id="contact-border">
-            <h3 id="txt-contact" style="font-weight:900; font-size:20px;">تواصل معنا</h3>
-        </div>
-        <a href="mailto:iioe@outlook.sa" style="display:block; color:var(--text-main); text-decoration:none; margin-bottom:15px; font-weight:700;"><i class="fas fa-envelope" style="color:var(--accent-color); margin-left:8px;"></i> iioe@outlook.sa</a>
-        <a href="tel:0591388202" style="display:block; color:var(--text-main); text-decoration:none; font-weight:700;"><i class="fas fa-phone" style="color:var(--accent-color); margin-left:8px;"></i> 0591388202</a>
-    </div>
 
-    <div class="container">
-        <header>
-            <h1 id="main-logo">NIKAI</h1>
-            <p id="txt-sub">متجر متخصص اشتراكات الرقميه اطلب اشتراكك الان</p>
+        <a
+          href="mailto:iioe@outlook.sa"
+          className="mb-4 block text-sm font-bold no-underline"
+          style={{ color: "var(--text-main)" }}
+        >
+          <i className="fas fa-envelope" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+          iioe@outlook.sa
+        </a>
+        <a href="tel:0591388202" className="block text-sm font-bold no-underline" style={{ color: "var(--text-main)" }}>
+          <i className="fas fa-phone" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+          0591388202
+        </a>
+
+        <div className="mt-10 grid grid-cols-2 gap-3">
+          <button className="glass rounded-2xl px-4 py-3 text-sm font-extrabold" onClick={() => goto("store")}>
+            {t.store}
+          </button>
+          <button className="glass rounded-2xl px-4 py-3 text-sm font-extrabold" onClick={() => goto("orders")}>
+            {t.orders}
+          </button>
+          <button className="glass rounded-2xl px-4 py-3 text-sm font-extrabold" onClick={() => goto("about")}>
+            {t.about}
+          </button>
+          <button className="glass rounded-2xl px-4 py-3 text-sm font-extrabold" onClick={() => goto("contact")}>
+            {t.contactTitle}
+          </button>
+          <button className="glass rounded-2xl px-4 py-3 text-sm font-extrabold" onClick={() => goto("faq")}>
+            {t.faq}
+          </button>
+          <button className="glass rounded-2xl px-4 py-3 text-sm font-extrabold" onClick={() => goto("reviews")}>
+            {t.reviews}
+          </button>
+        </div>
+      </aside>
+
+      {/* Content */}
+      <div className="mx-auto w-full max-w-[550px] px-5">
+        <header className="pt-[100px] pb-10 text-center">
+          <h1 className="logo-gradient text-[clamp(38px,12vw,65px)] font-black tracking-[12px] max-[480px]:tracking-[6px]">
+            NIKAI
+          </h1>
+          <p className="mt-2 px-2 text-[13px] font-bold opacity-70">{t.subtitle}</p>
         </header>
 
-        <div class="grid" id="mainGrid"></div>
-
-        <section id="checkout">
-            <h2 id="s-title" class="s-title"></h2>
-            <div id="s-plans" class="plans-grid"></div>
-            
-            <div id="email-area" style="margin-bottom:30px; display:none;">
-                <label id="txt-email" style="display:block; text-align:center; margin-bottom:12px; font-weight:900; opacity:0.7;">بريد التفعيل:</label>
-                <input type="email" id="u-email" placeholder="mail@example.com" style="width:100%; padding:20px; border-radius:20px; border:1px solid var(--card-border); background:var(--card-bg); color:var(--text-main); text-align:center; outline:none; font-family:inherit; font-weight:700; box-shadow:var(--shadow);">
+        {view === "store" && (
+          <main className="pb-14">
+            {/* Search */}
+            <div className="glass mb-5 flex items-center gap-3 rounded-[20px] px-4 py-3">
+              <i className="fas fa-magnifying-glass opacity-70" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t.searchPlaceholder}
+                className="w-full bg-transparent py-2 text-sm font-bold outline-none"
+                style={{ color: "var(--text-main)" }}
+              />
             </div>
 
-            <div class="bank-info-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                    <span id="txt-bank">البنك:</span><span>بنك البلاد</span>
+            {/* Products Grid */}
+            <section>
+              <div className="grid grid-cols-3 gap-[14px]">
+                {filteredProducts.map((p, i) => {
+                  const active = p.id === selectedProductId;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => onSelectProduct(p.id)}
+                      className={
+                        "glass group rounded-[28px] px-2 py-6 text-center transition-all " +
+                        "[transition-duration:var(--transition-speed)] " +
+                        "hover:-translate-y-2 hover:scale-[1.04]"
+                      }
+                      style={{
+                        transitionTimingFunction: "var(--spring)",
+                        transitionDelay: `${i * 0.04}s`,
+                        borderColor: active ? "var(--accent-color)" : "var(--card-border)",
+                      }}
+                    >
+                      <i
+                        className={p.icon + " mb-3 block text-[32px]"}
+                        style={{ color: active ? p.color : "var(--text-main)" }}
+                      />
+                      <span className="block text-[10px] font-extrabold">{p.name[lang]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {filteredProducts.length === 0 && (
+                <div className="mt-6 text-center text-sm font-semibold opacity-70">
+                  {lang === "ar" ? "لا توجد نتائج." : "No results."}
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                    <span id="txt-beneficiary">المستفيد:</span><span>سليمان فلاته</span>
+              )}
+            </section>
+
+            {/* Checkout */}
+            {selectedProduct && selectedPlan && (
+              <section ref={checkoutRef} className="mt-8">
+                <h2 className="mb-6 text-center text-2xl font-black" style={{ color: "var(--accent-color)" }}>
+                  {selectedProduct.name[lang]}
+                </h2>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {selectedProduct.plans.map((plan, idx) => {
+                    const selected = idx === selectedPlanIndex;
+                    const isPrivateBadge = Boolean(selectedProduct.isPrivate) && /private|خاص|شهر|mo/i.test(plan.label[lang]);
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedPlanIndex(idx)}
+                        className={
+                          "relative rounded-[22px] border-2 px-3 py-5 text-center transition-all " +
+                          (selected ? "-translate-y-1 text-white" : "")
+                        }
+                        style={{
+                          transitionTimingFunction: "var(--spring)",
+                          transitionDuration: "var(--transition-speed)",
+                          borderColor: selected ? selectedProduct.color : "var(--card-border)",
+                          background: selected ? selectedProduct.color : "var(--card-bg)",
+                          boxShadow: selected ? "0 10px 20px var(--brand-glow)" : "none",
+                        }}
+                      >
+                        {isPrivateBadge && (
+                          <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-1 text-[8px] font-black text-black">
+                            {lang === "ar" ? "خاص" : "Private"}
+                          </span>
+                        )}
+                        <span className="block text-xs font-extrabold">{plan.label[lang]}</span>
+                        <strong className="mt-1 block text-sm">{formatSar(lang, plan.priceSar)}</strong>
+                      </button>
+                    );
+                  })}
                 </div>
-                <div style="margin: 20px 0; border: 1px solid var(--card-border); border-radius:18px; overflow:hidden;">
-                    <div class="iban-box" style="padding:15px; background: rgba(0,0,0,0.1);"><span id="iban-val">SA0315000900133520020007</span></div>
-                    <button class="copy-iban-btn" onclick="copyIBAN()" id="txt-copy"><i class="fas fa-copy"></i> نسخ الآيبان</button>
+
+                {selectedProduct.needsEmail && (
+                  <div className="mt-7">
+                    <label className="mb-3 block text-center text-sm font-black opacity-70">{t.activationEmail}</label>
+                    <input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      type="email"
+                      placeholder={t.emailPlaceholder}
+                      className="glass w-full rounded-[20px] border px-5 py-4 text-center font-bold outline-none"
+                      style={{ borderColor: "var(--card-border)" }}
+                    />
+                  </div>
+                )}
+
+                <div className="glass mt-7 overflow-hidden rounded-[35px] p-6">
+                  <div className="mb-4 flex items-center justify-between text-sm font-bold">
+                    <span className="opacity-80">{t.bank}</span>
+                    <span>بنك البلاد</span>
+                  </div>
+                  <div className="mb-4 flex items-center justify-between text-sm font-bold">
+                    <span className="opacity-80">{t.beneficiary}</span>
+                    <span>سليمان فلاته</span>
+                  </div>
+
+                  <div className="my-5 overflow-hidden rounded-[18px] border" style={{ borderColor: "var(--card-border)" }}>
+                    <div className="px-4 py-3" style={{ background: "rgba(0,0,0,0.1)" }}>
+                      <span className="select-all font-bold" dir="ltr">
+                        {IBAN}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => copyText(IBAN, t.copied)}
+                      className="w-full px-4 py-4 text-center font-bold text-white"
+                      style={{ background: "var(--accent-color)" }}
+                    >
+                      <i className="fas fa-copy" /> {t.copyIban}
+                    </button>
+                  </div>
+
+                  <div className="text-center text-xs font-bold opacity-70">{t.digitalDeliveryNote}</div>
+
+                  <button
+                    onClick={confirmOrder}
+                    className="mt-4 w-full rounded-[25px] px-5 py-5 text-lg font-black text-white"
+                    style={{ background: "#25d366", boxShadow: "0 10px 20px rgba(37, 211, 102, 0.2)" }}
+                  >
+                    <i className="fab fa-whatsapp" /> {t.confirmOrder}
+                  </button>
                 </div>
-                <button class="btn-wa" id="txt-btn-wa" onclick="sendOrder()"><i class="fab fa-whatsapp"></i> تأكيد الطلب</button>
+
+                {/* Quick links */}
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  <button
+                    className="glass rounded-[18px] px-4 py-4 text-sm font-black"
+                    style={{ color: "var(--text-main)" }}
+                    onClick={() => setView("orders")}
+                  >
+                    <i className="fas fa-receipt" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+                    {t.orders}
+                  </button>
+                  <button
+                    className="glass rounded-[18px] px-4 py-4 text-sm font-black"
+                    style={{ color: "var(--text-main)" }}
+                    onClick={() => setView("faq")}
+                  >
+                    <i className="fas fa-circle-question" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+                    {t.faq}
+                  </button>
+                </div>
+              </section>
+            )}
+
+            {/* Store extras */}
+            <section className="mt-10">
+              <div className="grid grid-cols-2 gap-3">
+                <button className="glass rounded-[18px] px-4 py-4 text-sm font-black" onClick={() => setView("reviews")}>
+                  <i className="fas fa-star" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+                  {t.reviews}
+                </button>
+                <button className="glass rounded-[18px] px-4 py-4 text-sm font-black" onClick={() => setView("contact")}>
+                  <i className="fas fa-headset" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+                  {t.contactTitle}
+                </button>
+              </div>
+            </section>
+          </main>
+        )}
+
+        {view === "orders" && (
+          <section className="pb-14">
+            <h2 className="mb-2 text-center text-2xl font-black" style={{ color: "var(--accent-color)" }}>
+              {t.ordersTitle}
+            </h2>
+            <p className="mb-6 text-center text-sm font-semibold opacity-70">{t.ordersHint}</p>
+
+            <div className="mb-5 flex items-center justify-between">
+              <div className="text-xs font-black opacity-70">{t.digitalDeliveryNote}</div>
+              <button
+                className="rounded-[12px] px-3 py-2 text-xs font-black text-white"
+                style={{ background: "rgba(239, 68, 68, 0.85)" }}
+                onClick={() => {
+                  if (!orders.length) return;
+                  if (confirm(t.clearConfirm)) {
+                    setOrders([]);
+                    showToast(lang === "ar" ? "تم مسح السجل" : "History cleared");
+                  }
+                }}
+              >
+                {t.clearOrders}
+              </button>
             </div>
-        </section>
 
-        <!-- قسم حولنا -->
-        <section id="about-us">
-            <h2 class="section-title">من نحن</h2>
-            <p>متجر NIKAI متخصص في توفير اشتراكات رقمية عالية الجودة بأفضل الأسعار. فريقنا ملتزم بتقديم أفضل تجربة عملاء مع دعم فني متواصل.</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-medal"></i>
-                    <h4>جودة عالية</h4>
-                    <p>منتجات معتمدة وموثوقة</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-headset"></i>
-                    <h4>دعم 24/7</h4>
-                    <p>فريق دعم متواجد على مدار الساعة</p>
-                </div>
-            </div>
-        </section>
+            {orders.length === 0 && (
+              <div className="glass rounded-[20px] p-5 text-center">
+                <p className="text-sm opacity-80">{t.noOrders}</p>
+              </div>
+            )}
 
-        <!-- قسم تواصل معنا -->
-        <section id="contact-us">
-            <h2 class="section-title">تواصل معنا</h2>
-            <div class="bank-info-card" style="padding:20px;">
-                <div class="bank-row">
-                    <span id="txt-bank">البنك:</span><span>بنك البلاد</span>
-                </div>
-                <div class="bank-row">
-                    <span id="txt-beneficiary">المستفيد:</span><span>سليمان فلاته</span>
-                </div>
-                <div style="margin: 20px 0; border: 1px solid var(--card-border); border-radius:18px; overflow:hidden;">
-                    <div class="iban-box" style="padding:15px; background: rgba(0,0,0,0.1);"><span id="iban-val">SA0315000900133520020007</span></div>
-                </div>
-                <div style="display:flex; gap:15px; margin-top:20px;">
-                    <a href="mailto:iioe@outlook.sa" style="display:flex; align-items:center; justify-content:center; padding:15px; background:var(--card-bg); border-radius:15px; flex:1; text-decoration:none; color:var(--text-main);">
-                        <i class="fas fa-envelope" style="color:var(--accent-color); margin-left:8px;"></i>
-                        <span>البريد الإلكتروني</span>
-                    </a>
-                    <a href="tel:0591388202" style="display:flex; align-items:center; justify-content:center; padding:15px; background:var(--card-bg); border-radius:15px; flex:1; text-decoration:none; color:var(--text-main);">
-                        <i class="fas fa-phone" style="color:var(--accent-color); margin-left:8px;"></i>
-                        <span>المكالمات</span>
-                    </a>
-                </div>
-            </div>
-        </section>
+            {orders.length > 0 && (
+              <div className="space-y-4">
+                {orders.map((order) => {
+                  const product = products.find((p) => p.id === order.productId);
+                  const statusText = order.status === "completed" ? t.statusCompleted : t.statusPending;
+                  const statusStyle =
+                    order.status === "completed"
+                      ? { background: "rgba(0, 128, 0, 0.1)", color: "#008000" }
+                      : { background: "rgba(255, 165, 0, 0.1)", color: "#FFA500" };
 
-        <!-- مراجعات العملاء -->
-        <section id="testimonials" style="display:none;">
-            <h2 class="section-title">آراء عملاء</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p>"خدمة ممتازة وتفعيل سريع جدا"</p>
-                    <div style="font-weight:700; margin-top:10px;">عبدالله</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p>"دعم فني ممتاز ومتابعة مستمرة"</p>
-                    <div style="font-weight:700; margin-top:10px;">سارة</div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- لوحة التحكم -->
-        <section id="dashboard">
-            <div class="dashboard-header">
-                <div class="welcome-message">مرحبا، <span id="user-name"></span></div>
-                <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
-            </div>
-            <h2 class="section-title">طلباتك</h2>
-            <div id="orders-container"></div>
-        </section>
+                  const inquiryText =
+                    lang === "ar"
+                      ? `استفسار عن طلب اشتراك رقمي\nرقم الطلب: ${order.trackingCode}`
+                      : `Inquiry about digital subscription order\nOrder No.: ${order.trackingCode}`;
 
-        <footer><p id="txt-foot">جميع الحقوق محفوظة لمتجر NIKAI © 2024</p></footer>
-    </div>
-
-    <script>
-        let currentLang = 'ar';
-        let userAccount = null;
-        let orders = JSON.parse(localStorage.getItem('orders')) || [];
-
-        const products = [
-            { id: 'osn', icon: 'fas fa-plus-circle', name: {ar:'اشتراك OSN+', en:'Subscription OSN+'}, color: '#FF007F', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Mo (Private)'}, p:'20'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'110'}] },
-            { id: 'canva', icon: 'fas fa-pen-nib', name: {ar:'اشتراك Canva Pro', en:'Subscription Canva Pro'}, color: '#00C4CC', email: true, plans: [{l:{ar:'مدى الحياة',en:'Lifetime'}, p:'35'}] },
-            { id: 'shahid', icon: 'fas fa-play-circle', name: {ar:'اشتراك شاهد VIP رياضي', en:'Subscription Shahid VIP'}, color: '#00D084', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Mo (Private)'}, p:'29'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'180'}] },
-            { id: 'netflix', icon: 'fas fa-film', name: {ar:'اشتراك Netflix', en:'Subscription Netflix'}, color: '#E50914', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Mo (Private)'}, p:'20'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'200'}] },
-            { id: 'youtube', icon: 'fab fa-youtube', name: {ar:'اشتراك YouTube Premium', en:'Subscription YouTube'}, color: '#FF0000', email:true, plans: [{l:{ar:'دعوة سنة',en:'1Y Invitation'}, p:'200'}, {l:{ar:'فردي سنة',en:'1Y Solo'}, p:'350'}] },
-            { id: 'office', icon: 'fas fa-file-word', name: {ar:'اشتراك Office 365', en:'Subscription Office 365'}, color: '#D83B01', plans: [{l:{ar:'تفعيل رقمي',en:'Activation'}, p:'39'}] },
-            { id: 'crunchy', icon: 'fas fa-tv', name: {ar:'اشتراك Crunchyroll', en:'Subscription Crunchyroll'}, color: '#F47521', plans: [{l:{ar:'سنة كاملة',en:'1 Year'}, p:'50'}] },
-            { id: 'fasel', icon: 'fas fa-bolt', name: {ar:'اشتراك Fasel Plus', en:'Subscription Fasel Plus'}, color: '#FFC107', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Mo (Private)'}, p:'13'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'150'}] },
-            { id: 'chatgpt', icon: 'fas fa-robot', name: {ar:'اشتراك ChatGPT', en:'Subscription ChatGPT'}, color: '#10A37F', plans: [{l:{ar:'سنة كاملة',en:'1 Year'}, p:'100'}] }
-        ];
-
-        let currentProduct = null;
-        let currentSelectedPlan = null;
-
-        // التحقق من وجود حساب مستخدم
-        function checkUserAccount() {
-            const savedUser = localStorage.getItem('userAccount');
-            if (savedUser) {
-                userAccount = JSON.parse(savedUser);
-                document.getElementById('user-name').textContent = userAccount.name;
-                renderDashboard();
-            }
-        }
-
-        // عرض لوحة التحكم
-        function renderDashboard() {
-            const dashboard = document.getElementById('dashboard');
-            dashboard.style.display = 'block';
-            
-            const container = document.querySelector('.container');
-            container.classList.add('dashboard-mode');
-            
-            renderOrders();
-        }
-
-        // عرض الطلبات
-        function renderOrders() {
-            const container = document.getElementById('orders-container');
-            
-            if (orders.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">لا يوجد طلبات سابقة</p>';
-                return;
-            }
-            
-            container.innerHTML = orders.map(order => {
-                const product = products.find(p => p.id === order.productId);
-                return `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div><strong>${product.name[currentLang]}</strong></div>
-                            <div class="order-status ${order.status === 'completed' ? 'status-active' : 'status-pending'}">
-                                ${order.status === 'completed' ? 'مكتمل' : 'قيد التنفيذ'}
+                  return (
+                    <details key={order.id} className="glass rounded-[20px] p-5">
+                      <summary className="cursor-pointer list-none">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="font-black">{product?.name[lang] ?? order.productId}</div>
+                            <div className="mt-1 text-sm font-semibold opacity-80">
+                              {order.planLabel[lang]} • {formatSar(lang, order.priceSar)}
                             </div>
+                          </div>
+                          <div className="rounded-full px-3 py-1 text-[12px] font-bold" style={statusStyle}>
+                            {statusText}
+                          </div>
                         </div>
-                        <div>الباقة: ${order.plan}</div>
-                        <div>السعر: ${order.price} ريال</div>
-                        <div>التاريخ: ${new Date(order.date).toLocaleDateString()}</div>
+                      </summary>
+
+                      <div className="mt-4 text-sm font-semibold opacity-90">
+                        <div>
+                          {lang === "ar" ? "التاريخ" : "Date"}: {new Date(order.dateIso).toLocaleDateString()}
+                        </div>
+                        <div className="mt-3 flex items-center justify-between gap-3 rounded-[14px] border px-3 py-3" style={{ borderColor: "var(--card-border)" }}>
+                          <div className="text-xs font-black opacity-70">{t.orderNumber}</div>
+                          <div className="select-all text-sm font-black" dir="ltr">
+                            {order.trackingCode}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 grid grid-cols-2 gap-3">
+                        <button
+                          className="rounded-[15px] px-4 py-4 text-sm font-black text-white"
+                          style={{ background: "var(--accent-color)" }}
+                          onClick={() => copyText(order.trackingCode, t.copied)}
+                        >
+                          <i className="fas fa-copy" /> {t.copyOrderNumber}
+                        </button>
+                        <a
+                          className="glass flex items-center justify-center gap-2 rounded-[15px] px-4 py-4 text-sm font-black no-underline"
+                          style={{ color: "var(--text-main)" }}
+                          href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(inquiryText)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <i className="fab fa-whatsapp" style={{ color: "#25d366" }} />
+                          {t.askWhatsapp}
+                        </a>
+                      </div>
+
+                      {order.customerEmail && (
+                        <div className="mt-3 text-xs font-bold opacity-70" dir="ltr">
+                          {order.customerEmail}
+                        </div>
+                      )}
+                    </details>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              <button className="glass rounded-[18px] px-4 py-4 text-sm font-black" onClick={() => setView("store")}>
+                <i className="fas fa-store" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+                {t.store}
+              </button>
+              <button className="glass rounded-[18px] px-4 py-4 text-sm font-black" onClick={() => setView("contact")}>
+                <i className="fas fa-headset" style={{ color: "var(--accent-color)", marginInlineEnd: 8 }} />
+                {t.contactTitle}
+              </button>
+            </div>
+          </section>
+        )}
+
+        {view === "faq" && (
+          <section className="pb-14">
+            <h2 className="mb-6 text-center text-2xl font-black" style={{ color: "var(--accent-color)" }}>
+              {t.faq}
+            </h2>
+
+            <div className="space-y-3">
+              {faq.map((item, idx) => (
+                <details key={idx} className="glass rounded-[20px] p-5">
+                  <summary className="cursor-pointer list-none text-sm font-black">
+                    <div className="flex items-center justify-between gap-3">
+                      <span>{item.q[lang]}</span>
+                      <i className="fas fa-chevron-down opacity-70" />
                     </div>
-                `;
-            }).join('');
-        }
+                  </summary>
+                  <p className="mt-3 text-sm font-semibold opacity-85">{item.a[lang]}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
 
-        // تسجيل خروج
-        function logout() {
-            localStorage.removeItem('userAccount');
-            userAccount = null;
-            document.getElementById('dashboard').style.display = 'none';
-            document.querySelector('.container').classList.remove('dashboard-mode');
-            closeModal();
-        }
+        {view === "reviews" && (
+          <section className="pb-14">
+            <h2 className="mb-6 text-center text-2xl font-black" style={{ color: "var(--accent-color)" }}>
+              {t.reviews}
+            </h2>
 
-        // إضافة طلب
-        function addOrder(productId, plan, price) {
-            if (!userAccount) return;
-            
-            const order = {
-                id: Date.now(),
-                productId,
-                plan,
-                price,
-                status: 'completed',
-                date: new Date().toISOString()
-            };
-            
-            orders.unshift(order);
-            localStorage.setItem('orders', JSON.stringify(orders));
-            renderOrders();
-        }
-
-        function initGrid() {
-            const grid = document.getElementById('mainGrid');
-            grid.innerHTML = products.map((p, i) => `
-                <div class="card" id="card-${p.id}" onclick="selectProduct('${p.id}')" style="transition-delay: ${i * 0.1}s">
-                    <i class="${p.icon}" style="${currentProduct && currentProduct.id === p.id ? 'color:'+p.color : ''}"></i>
-                    <span>${p.name[currentLang]}</span>
+            <div className="space-y-4">
+              {testimonials.map((r, idx) => (
+                <div key={idx} className="glass rounded-[20px] p-5">
+                  <div className="mb-2 text-sm" style={{ color: "#FFD700" }}>
+                    {"★★★★★".slice(0, r.rating)}
+                  </div>
+                  <p className="text-sm font-semibold opacity-90">“{r.text[lang]}”</p>
+                  <div className="mt-3 text-sm font-black opacity-80">{r.name}</div>
                 </div>
-            `).join('');
-            setTimeout(() => document.querySelectorAll('.card').forEach(c => c.classList.add('show')), 100);
-        }
+              ))}
+            </div>
+          </section>
+        )}
 
-        function selectProduct(id) {
-            currentProduct = products.find(p => p.id === id);
-            document.documentElement.style.setProperty('--accent-color', currentProduct.color);
-            document.documentElement.style.setProperty('--brand-glow', currentProduct.color + '44');
-            document.querySelectorAll('.card').forEach(c => { c.classList.remove('active'); c.querySelector('i').style.color = ''; });
-            const activeCard = document.getElementById('card-' + id);
-            activeCard.classList.add('active');
-            activeCard.querySelector('i').style.color = currentProduct.color;
-            document.getElementById('checkout').style.display = 'block';
-            currentSelectedPlan = null;
-            renderOrderArea();
-            setTimeout(() => { document.getElementById('checkout').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-        }
+        {view === "about" && (
+          <section className="pb-14">
+            <h2 className="mb-6 text-center text-2xl font-black" style={{ color: "var(--accent-color)" }}>
+              {t.about}
+            </h2>
+            <p className="glass rounded-[25px] p-5 text-sm font-semibold opacity-90">{t.aboutBody}</p>
 
-        function renderOrderArea() {
-            if(!currentProduct) return;
-            document.getElementById('s-title').innerText = currentProduct.name[currentLang];
-            document.getElementById('s-plans').innerHTML = currentProduct.plans.map((plan, i) => `
-                <div class="plan-box ${(!currentSelectedPlan && i===0) || (currentSelectedPlan && currentSelectedPlan.p === plan.p) ? 'selected' : ''}" onclick="selectPlan(this, '${plan.l[currentLang]}', '${plan.p}')">
-                    ${(currentProduct.isPrivate && plan.l[currentLang].includes('شهر' || 'Mo')) ? '<span class="badge-private">' + (currentLang==='ar'?'خاص':'Private') + '</span>' : ''}
-                    <span>${plan.l[currentLang]}</span><strong>${plan.p} ${currentLang==='ar'?'ريال':'SAR'}</strong>
+            <div className="mt-6 grid grid-cols-2 gap-5">
+              <div className="glass rounded-[20px] p-5 text-center">
+                <i className="fas fa-medal mb-2 text-[32px]" style={{ color: "var(--accent-color)" }} />
+                <h4 className="font-black">{t.feature1Title}</h4>
+                <p className="mt-1 text-sm opacity-80">{t.feature1Body}</p>
+              </div>
+              <div className="glass rounded-[20px] p-5 text-center">
+                <i className="fas fa-headset mb-2 text-[32px]" style={{ color: "var(--accent-color)" }} />
+                <h4 className="font-black">{t.feature2Title}</h4>
+                <p className="mt-1 text-sm opacity-80">{t.feature2Body}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {view === "contact" && (
+          <section className="pb-14">
+            <h2 className="mb-6 text-center text-2xl font-black" style={{ color: "var(--accent-color)" }}>
+              {t.contactTitle}
+            </h2>
+
+            <div className="glass rounded-[35px] p-5">
+              <div className="mb-3 flex items-center justify-between text-sm font-bold">
+                <span className="opacity-80">{t.bank}</span>
+                <span>بنك البلاد</span>
+              </div>
+              <div className="mb-3 flex items-center justify-between text-sm font-bold">
+                <span className="opacity-80">{t.beneficiary}</span>
+                <span>سليمان فلاته</span>
+              </div>
+
+              <div className="my-5 overflow-hidden rounded-[18px] border" style={{ borderColor: "var(--card-border)" }}>
+                <div className="px-4 py-3" style={{ background: "rgba(0,0,0,0.1)" }}>
+                  <span className="select-all font-bold" dir="ltr">
+                    {IBAN}
+                  </span>
                 </div>
-            `).join('');
-            if(!currentSelectedPlan) currentSelectedPlan = {l: currentProduct.plans[0].l[currentLang], p: currentProduct.plans[0].p};
-            document.getElementById('email-area').style.display = currentProduct.email ? 'block' : 'none';
-        }
+              </div>
 
-        function selectPlan(el, l, p) {
-            document.querySelectorAll('.plan-box').forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
-            currentSelectedPlan = {l, p};
-        }
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <a
+                  className="glass flex items-center justify-center gap-2 rounded-[15px] p-4 text-sm font-bold no-underline"
+                  href="mailto:iioe@outlook.sa"
+                  style={{ color: "var(--text-main)" }}
+                >
+                  <i className="fas fa-envelope" style={{ color: "var(--accent-color)" }} />
+                  {t.email}
+                </a>
+                <a
+                  className="glass flex items-center justify-center gap-2 rounded-[15px] p-4 text-sm font-bold no-underline"
+                  href="tel:0591388202"
+                  style={{ color: "var(--text-main)" }}
+                >
+                  <i className="fas fa-phone" style={{ color: "var(--accent-color)" }} />
+                  {t.calls}
+                </a>
+              </div>
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const icon = document.getElementById('theme-icon');
-            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
-        }
+              <a
+                className="mt-4 flex items-center justify-center gap-2 rounded-[18px] px-4 py-4 text-sm font-black text-white no-underline"
+                style={{ background: "#25d366" }}
+                href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i className="fab fa-whatsapp" /> WhatsApp
+              </a>
+            </div>
+          </section>
+        )}
 
-        function toggleLang() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            document.body.className = currentLang + (document.body.classList.contains('light-mode') ? ' light-mode' : '');
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            
-            const texts = {
-                ar: {
-                    why: "لماذا تختارنا؟", why1: "🚀 تفعيل فوري ومضمون.", why2: "📞 دعم فني على مدار الساعة.",
-                    contact: "تواصل معنا", menu: "القائمة", sub: "متجر متخصص اشتراكات الرقميه اطلب اشتراكك الان",
-                    bank: "البنك:", beneficiary: "المستفيد:", copy: "نسخ الآيبان", wa: "تأكيد الطلب",
-                    email: "بريد التفعيل:", foot: "جميع الحقوق محفوظة لمتجر NIKAI © 2024", toast: "تم النسخ بنجاح ✅",
-                    about: "من نحن", contactTitle: "تواصل معنا", dashboard: "لوحة التحكم",
-                    orders: "طلباتك", logout: "تسجيل خروج", noOrders: "لا يوجد طلبات سابقة",
-                    statusCompleted: "مكتمل", statusPending: "قيد التنفيذ"
-                },
-                en: {
-                    why: "Why Us?", why1: "🚀 Instant Activation.", why2: "📞 24/7 Support.",
-                    contact: "Contact Us", menu: "Menu", sub: "Digital Subscriptions Specialist. Order Now",
-                    bank: "Bank:", beneficiary: "Beneficiary:", copy: "Copy IBAN", wa: "Confirm Order",
-                    email: "Activation Email:", foot: "All Rights Reserved to NIKAI STORE © 2024", toast: "Copied Successfully ✅",
-                    about: "About Us", contactTitle: "Contact Us", dashboard: "Dashboard",
-                    orders: "Your Orders", logout: "Logout", noOrders: "No previous orders",
-                    statusCompleted: "Completed", statusPending: "Pending"
-                }
-            };
-            
-            const t = texts[currentLang];
-            document.getElementById('txt-why').innerText = t.why;
-            document.getElementById('txt-why-1').innerText = t.why1;
-            document.getElementById('txt-why-2').innerText = t.why2;
-            document.getElementById('txt-contact').innerText = t.contact;
-            document.getElementById('txt-menu').innerText = t.menu;
-            document.getElementById('txt-sub').innerText = t.sub;
-            document.getElementById('txt-bank').innerText = t.bank;
-            document.getElementById('txt-beneficiary').innerText = t.beneficiary;
-            document.getElementById('txt-copy').innerHTML = `<i class="fas fa-copy"></i> ${t.copy}`;
-            document.getElementById('txt-btn-wa').innerHTML = `<i class="fab fa-whatsapp"></i> ${t.wa}`;
-            document.getElementById('txt-email').innerText = t.email;
-            document.getElementById('txt-foot').innerText = t.foot;
-            document.querySelector('#about-us .section-title').innerText = t.about;
-            document.querySelector('#contact-us .section-title').innerText = t.contactTitle;
-            document.querySelector('.welcome-message').innerHTML = t.dashboard;
-            document.getElementById('user-name').innerText = userAccount ? userAccount.name : '';
-            
-            initGrid();
-            if(currentProduct) renderOrderArea();
-            if(document.getElementById('dashboard').style.display === 'block') renderOrders();
-        }
-
-        function copyIBAN() {
-            navigator.clipboard.writeText("SA0315000900133520020007");
-            const toast = document.getElementById('toast');
-            toast.innerText = currentLang === 'ar' ? "تم النسخ بنجاح ✅" : "Copied Successfully ✅";
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2500);
-        }
-
-        function sendOrder() {
-            const email = document.getElementById('u-email').value;
-            if(currentProduct.email && !email) {
-                alert(currentLang === 'ar' ? "يرجى إدخال البريد الإلكتروني" : "Please enter email");
-                return;
-            }
-            
-            // إضافة الطلب إلى قائمة الطلبات
-            addOrder(currentProduct.id, currentSelectedPlan.l, currentSelectedPlan.p);
-            
-            // محاكاة إرسال رسالة تأكيد
-            sendOrderConfirmation(email);
-            
-            // فتح رابط واتساب
-            let msg = `طلب جديد:\n- ${currentProduct.name[currentLang]}\n- الباقة: ${currentSelectedPlan.l}\n- السعر: ${currentSelectedPlan.p}`;
-            if(email) msg += `\n- الإيميل: ${email}`;
-            
-            window.open(`https://wa.me/966591388202?text=${encodeURIComponent(msg)}`);
-        }
-
-        function sendOrderConfirmation(email) {
-            if (email) {
-                const orderDetails = `
-                    تفاصيل طلبك:
-                    - ${currentProduct.name[currentLang]}
-                    - الباقة: ${currentSelectedPlan.l}
-                    - السعر: ${currentSelectedPlan.p} ريال
-                    - تاريخ الطلب: ${new Date().toLocaleDateString()}
-                `;
-                console.log("تم إرسال رسالة تأكيد إلى بريدك الإلكتروني:", orderDetails);
-            }
-        }
-
-        function showLoginModal() {
-            if (userAccount) {
-                document.getElementById('dashboard').style.display = 'block';
-                document.querySelector('.container').classList.add('dashboard-mode');
-                document.getElementById('user-name').textContent = userAccount.name;
-                renderOrders();
-                return;
-            }
-            
-            const loginModal = `
-                <div class="modal-overlay" id="login-overlay">
-                    <div class="modal-box">
-                        <h3>${currentLang === 'ar' ? 'تسجيل الدخول' : 'Login'}</h3>
-                        <input type="text" placeholder="${currentLang === 'ar' ? 'البريد الإلكتروني' : 'Email'}" id="login-email">
-                        <input type="password" placeholder="${currentLang === 'ar' ? 'كلمة المرور' : 'Password'}" id="login-password">
-                        <button onclick="loginUser()">${currentLang === 'ar' ? 'دخول' : 'Login'}</button>
-                        <p>${currentLang === 'ar' ? 'ليس لديك حساب؟' : 'Don\'t have an account?'} <a onclick="showSignupModal()">${currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up'}</a></p>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', loginModal);
-        }
-
-        function loginUser() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // محاكاة عملية تسجيل الدخول
-            const savedUser = localStorage.getItem('userAccount');
-            if (savedUser) {
-                userAccount = JSON.parse(savedUser);
-                closeModal();
-                document.getElementById('dashboard').style.display = 'block';
-                document.querySelector('.container').classList.add('dashboard-mode');
-                document.getElementById('user-name').textContent = userAccount.name;
-                renderOrders();
-            } else {
-                alert(currentLang === 'ar' ? 'بيانات دخول غير صحيحة' : 'Invalid credentials');
-            }
-        }
-
-        function showSignupModal() {
-            closeModal();
-            const signupModal = `
-                <div class="modal-overlay" id="signup-overlay">
-                    <div class="modal-box">
-                        <h3>${currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up'}</h3>
-                        <input type="text" placeholder="${currentLang === 'ar' ? 'الاسم الكامل' : 'Full Name'}" id="fullname">
-                        <input type="text" placeholder="${currentLang === 'ar' ? 'البريد الإلكتروني' : 'Email'}" id="signup-email">
-                        <input type="password" placeholder="${currentLang === 'ar' ? 'كلمة المرور' : 'Password'}" id="signup-password">
-                        <input type="password" placeholder="${currentLang === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password'}" id="confirm-password">
-                        <button onclick="signupUser()">${currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up'}</button>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', signupModal);
-        }
-
-        function signupUser() {
-            const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            
-            if (password !== confirmPassword) {
-                alert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة' : 'Passwords do not match');
-                return;
-            }
-            
-            // حفظ بيانات المستخدم
-            userAccount = { name: fullname, email, password };
-            localStorage.setItem('userAccount', JSON.stringify(userAccount));
-            closeModal();
-            
-            document.getElementById('dashboard').style.display = 'block';
-            document.querySelector('.container').classList.add('dashboard-mode');
-            document.getElementById('user-name').textContent = userAccount.name;
-            orders = [];
-        }
-
-        function closeModal() {
-            document.getElementById('login-overlay')?.remove();
-            document.getElementById('signup-overlay')?.remove();
-        }
-
-        function openDrawer() { 
-            document.getElementById('drawer').classList.add('active'); 
-            document.getElementById('overlay').style.display = 'block'; 
-        }
-        function closeDrawer() { 
-            document.getElementById('drawer').classList.remove('active'); 
-            document.getElementById('overlay').style.display = 'none'; 
-        }
-
-        function showAboutSection() {
-            document.getElementById('about-us').style.display = 'block';
-            document.getElementById('contact-us').style.display = 'none';
-            document.getElementById('testimonials').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'none';
-        }
-
-        function showContactSection() {
-            document.getElementById('about-us').style.display = 'none';
-            document.getElementById('contact-us').style.display = 'block';
-            document.getElementById('testimonials').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'none';
-        }
-
-        function showDashboardSection() {
-            if (!userAccount) {
-                showLoginModal();
-                return;
-            }
-            document.getElementById('about-us').style.display = 'none';
-            document.getElementById('contact-us').style.display = 'none';
-            document.getElementById('testimonials').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            renderOrders();
-        }
-
-        // البدء
-        initGrid();
-        checkUserAccount();
-    </script>
-</body>
-</html>
+        <footer className="border-t py-12 text-center text-[11px] opacity-60" style={{ borderColor: "var(--card-border)" }}>
+          {t.footer}
+        </footer>
+      </div>
+    </div>
+  );
+}
