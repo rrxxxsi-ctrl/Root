@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="متجر NIKAI متخصص في اشتراكات رقمية عالية الجودة. اشتري اشتراكات OSN+, Netflix, YouTube Premium وأكثر بأفضل الأسعار مع نظام تتبع للطلبات.">
+    <meta name="keywords" content="اشتراكات رقمية, اشتراكات OSN, اشتراكات Netflix, اشتراكات YouTube">
     <title>NIKAI | فخامة الرقمية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@600;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* وضع الليل */
             --bg-main: #010103;
             --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(255, 255, 255, 0.08);
@@ -18,10 +19,10 @@
             --shadow: 0 20px 40px rgba(0,0,0,0.6);
             --logo-gradient: linear-gradient(to bottom, #ffffff, #666666);
             --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-speed: 0.4s;
         }
 
         body.light-mode {
-            /* وضع النهار */
             --bg-main: #f8fafc;
             --card-bg: rgba(255, 255, 255, 0.8);
             --card-border: rgba(0, 0, 0, 0.06);
@@ -75,7 +76,7 @@
             gap: 4px;
             box-shadow: var(--shadow);
             z-index: 2000;
-            transition: 0.4s var(--spring);
+            transition: var(--transition-speed) var(--spring);
         }
         body.en .glass-dock { right: auto; left: 20px; }
 
@@ -88,7 +89,7 @@
             justify-content: center;
             cursor: pointer;
             color: var(--text-main);
-            transition: 0.3s var(--spring);
+            transition: var(--transition-speed) var(--spring);
         }
         .dock-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.1); }
         .dock-separator { width: 1px; height: 18px; background: var(--card-border); margin: 0 2px; }
@@ -102,7 +103,7 @@
             border: 1px solid var(--card-border); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; box-shadow: var(--shadow); color: var(--text-main);
-            transition: 0.4s var(--spring);
+            transition: var(--transition-speed) var(--spring);
         }
 
         /* الهيدر - حل مشكلة التداخل */
@@ -130,13 +131,13 @@
         .card { 
             background: var(--card-bg); backdrop-filter: blur(30px);
             border: 1px solid var(--card-border); border-radius: 28px;
-            padding: 25px 10px; cursor: pointer; transition: 0.4s var(--spring);
+            padding: 25px 10px; cursor: pointer; transition: var(--transition-speed) var(--spring);
             text-align: center; box-shadow: var(--shadow);
             opacity: 0; transform: translateY(20px);
         }
         .card.show { opacity: 1; transform: translateY(0); }
         .card:hover { transform: translateY(-8px) scale(1.04); border-color: var(--accent-color); }
-        .card i { font-size: 32px; margin-bottom: 12px; color: var(--text-main); transition: 0.4s; }
+        .card i { font-size: 32px; margin-bottom: 12px; color: var(--text-main); transition: var(--transition-speed); }
         .card span { display: block; font-size: 10px; font-weight: 800; }
         .card.active { border-color: var(--accent-color); background: rgba(255,255,255,0.05); }
 
@@ -148,7 +149,7 @@
         .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0; }
         .plan-box { 
             background: var(--card-bg); border: 2px solid var(--card-border); padding: 20px 10px;
-            border-radius: 22px; cursor: pointer; text-align: center; transition: 0.4s var(--spring);
+            border-radius: 22px; cursor: pointer; text-align: center; transition: var(--transition-speed) var(--spring);
             position: relative;
         }
         .plan-box.selected { background: var(--accent-color); color: #fff; transform: translateY(-5px); box-shadow: 0 10px 20px var(--brand-glow); }
@@ -168,6 +169,110 @@
         .overlay { position: fixed; top: 0; left: 0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:2400; backdrop-filter:blur(8px); }
         footer { text-align: center; padding: 50px 0; opacity: 0.5; font-size: 11px; border-top: 1px solid var(--card-border); }
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--accent-color); color: #fff; padding: 12px 30px; border-radius: 50px; font-weight: 700; display: none; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-size: 14px; }
+        
+        /* أقسام جديدة */
+        #about-us, #contact-us, #dashboard { display: none; margin-top: 50px; }
+        .section-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 25px; color: var(--accent-color); }
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+        .feature-card { text-align: center; padding: 15px; }
+        .feature-card i { font-size: 32px; margin-bottom: 10px; color: var(--accent-color); }
+        .testimonials-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
+        .testimonial-card { background: var(--card-bg); padding: 20px; border-radius: 20px; }
+        .stars { color: #FFD700; margin-bottom: 5px; }
+        
+        /* نافذة تسجيل الدخول */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .modal-box h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            border: 1px solid var(--card-border);
+            background: transparent;
+            color: var(--text-main);
+        }
+        .modal-box button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        /* لوحة التحكم */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .logout-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .order-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--card-border);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .status-active {
+            background: rgba(0, 128, 0, 0.1);
+            color: #008000;
+        }
+        .status-pending {
+            background: rgba(255, 165, 0, 0.1);
+            color: #FFA500;
+        }
     </style>
 </head>
 <body class="ar">
@@ -188,6 +293,10 @@
         <div class="dock-separator"></div>
         <div class="dock-item" onclick="toggleLang()">
             <i class="fas fa-language"></i>
+        </div>
+        <div class="dock-separator"></div>
+        <div class="dock-item" onclick="showLoginModal()">
+            <i class="fas fa-user"></i>
         </div>
     </div>
 
@@ -232,10 +341,10 @@
             </div>
 
             <div class="bank-info-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:700;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <span id="txt-bank">البنك:</span><span>بنك البلاد</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:700;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <span id="txt-beneficiary">المستفيد:</span><span>سليمان فلاته</span>
                 </div>
                 <div style="margin: 20px 0; border: 1px solid var(--card-border); border-radius:18px; overflow:hidden;">
@@ -246,11 +355,85 @@
             </div>
         </section>
 
+        <!-- قسم حولنا -->
+        <section id="about-us">
+            <h2 class="section-title">من نحن</h2>
+            <p>متجر NIKAI متخصص في توفير اشتراكات رقمية عالية الجودة بأفضل الأسعار. فريقنا ملتزم بتقديم أفضل تجربة عملاء مع دعم فني متواصل.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-medal"></i>
+                    <h4>جودة عالية</h4>
+                    <p>منتجات معتمدة وموثوقة</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <h4>دعم 24/7</h4>
+                    <p>فريق دعم متواجد على مدار الساعة</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم تواصل معنا -->
+        <section id="contact-us">
+            <h2 class="section-title">تواصل معنا</h2>
+            <div class="bank-info-card" style="padding:20px;">
+                <div class="bank-row">
+                    <span id="txt-bank">البنك:</span><span>بنك البلاد</span>
+                </div>
+                <div class="bank-row">
+                    <span id="txt-beneficiary">المستفيد:</span><span>سليمان فلاته</span>
+                </div>
+                <div style="margin: 20px 0; border: 1px solid var(--card-border); border-radius:18px; overflow:hidden;">
+                    <div class="iban-box" style="padding:15px; background: rgba(0,0,0,0.1);"><span id="iban-val">SA0315000900133520020007</span></div>
+                </div>
+                <div style="display:flex; gap:15px; margin-top:20px;">
+                    <a href="mailto:iioe@outlook.sa" style="display:flex; align-items:center; justify-content:center; padding:15px; background:var(--card-bg); border-radius:15px; flex:1; text-decoration:none; color:var(--text-main);">
+                        <i class="fas fa-envelope" style="color:var(--accent-color); margin-left:8px;"></i>
+                        <span>البريد الإلكتروني</span>
+                    </a>
+                    <a href="tel:0591388202" style="display:flex; align-items:center; justify-content:center; padding:15px; background:var(--card-bg); border-radius:15px; flex:1; text-decoration:none; color:var(--text-main);">
+                        <i class="fas fa-phone" style="color:var(--accent-color); margin-left:8px;"></i>
+                        <span>المكالمات</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- مراجعات العملاء -->
+        <section id="testimonials" style="display:none;">
+            <h2 class="section-title">آراء عملاء</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"خدمة ممتازة وتفعيل سريع جدا"</p>
+                    <div style="font-weight:700; margin-top:10px;">عبدالله</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"دعم فني ممتاز ومتابعة مستمرة"</p>
+                    <div style="font-weight:700; margin-top:10px;">سارة</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- لوحة التحكم -->
+        <section id="dashboard">
+            <div class="dashboard-header">
+                <div class="welcome-message">مرحبا، <span id="user-name"></span></div>
+                <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+            </div>
+            <h2 class="section-title">طلباتك</h2>
+            <div id="orders-container"></div>
+        </section>
+
         <footer><p id="txt-foot">جميع الحقوق محفوظة لمتجر NIKAI © 2024</p></footer>
     </div>
 
     <script>
         let currentLang = 'ar';
+        let userAccount = null;
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
         const products = [
             { id: 'osn', icon: 'fas fa-plus-circle', name: {ar:'اشتراك OSN+', en:'Subscription OSN+'}, color: '#FF007F', isPrivate: true, plans: [{l:{ar:'شهر (ملف خاص)',en:'1 Mo (Private)'}, p:'20'}, {l:{ar:'سنة كاملة',en:'1 Year'}, p:'110'}] },
             { id: 'canva', icon: 'fas fa-pen-nib', name: {ar:'اشتراك Canva Pro', en:'Subscription Canva Pro'}, color: '#00C4CC', email: true, plans: [{l:{ar:'مدى الحياة',en:'Lifetime'}, p:'35'}] },
@@ -265,6 +448,81 @@
 
         let currentProduct = null;
         let currentSelectedPlan = null;
+
+        // التحقق من وجود حساب مستخدم
+        function checkUserAccount() {
+            const savedUser = localStorage.getItem('userAccount');
+            if (savedUser) {
+                userAccount = JSON.parse(savedUser);
+                document.getElementById('user-name').textContent = userAccount.name;
+                renderDashboard();
+            }
+        }
+
+        // عرض لوحة التحكم
+        function renderDashboard() {
+            const dashboard = document.getElementById('dashboard');
+            dashboard.style.display = 'block';
+            
+            const container = document.querySelector('.container');
+            container.classList.add('dashboard-mode');
+            
+            renderOrders();
+        }
+
+        // عرض الطلبات
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            
+            if (orders.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">لا يوجد طلبات سابقة</p>';
+                return;
+            }
+            
+            container.innerHTML = orders.map(order => {
+                const product = products.find(p => p.id === order.productId);
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div><strong>${product.name[currentLang]}</strong></div>
+                            <div class="order-status ${order.status === 'completed' ? 'status-active' : 'status-pending'}">
+                                ${order.status === 'completed' ? 'مكتمل' : 'قيد التنفيذ'}
+                            </div>
+                        </div>
+                        <div>الباقة: ${order.plan}</div>
+                        <div>السعر: ${order.price} ريال</div>
+                        <div>التاريخ: ${new Date(order.date).toLocaleDateString()}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // تسجيل خروج
+        function logout() {
+            localStorage.removeItem('userAccount');
+            userAccount = null;
+            document.getElementById('dashboard').style.display = 'none';
+            document.querySelector('.container').classList.remove('dashboard-mode');
+            closeModal();
+        }
+
+        // إضافة طلب
+        function addOrder(productId, plan, price) {
+            if (!userAccount) return;
+            
+            const order = {
+                id: Date.now(),
+                productId,
+                plan,
+                price,
+                status: 'completed',
+                date: new Date().toISOString()
+            };
+            
+            orders.unshift(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            renderOrders();
+        }
 
         function initGrid() {
             const grid = document.getElementById('mainGrid');
@@ -326,13 +584,19 @@
                     why: "لماذا تختارنا؟", why1: "🚀 تفعيل فوري ومضمون.", why2: "📞 دعم فني على مدار الساعة.",
                     contact: "تواصل معنا", menu: "القائمة", sub: "متجر متخصص اشتراكات الرقميه اطلب اشتراكك الان",
                     bank: "البنك:", beneficiary: "المستفيد:", copy: "نسخ الآيبان", wa: "تأكيد الطلب",
-                    email: "بريد التفعيل:", foot: "جميع الحقوق محفوظة لمتجر NIKAI © 2024", toast: "تم النسخ بنجاح ✅"
+                    email: "بريد التفعيل:", foot: "جميع الحقوق محفوظة لمتجر NIKAI © 2024", toast: "تم النسخ بنجاح ✅",
+                    about: "من نحن", contactTitle: "تواصل معنا", dashboard: "لوحة التحكم",
+                    orders: "طلباتك", logout: "تسجيل خروج", noOrders: "لا يوجد طلبات سابقة",
+                    statusCompleted: "مكتمل", statusPending: "قيد التنفيذ"
                 },
                 en: {
                     why: "Why Us?", why1: "🚀 Instant Activation.", why2: "📞 24/7 Support.",
                     contact: "Contact Us", menu: "Menu", sub: "Digital Subscriptions Specialist. Order Now",
                     bank: "Bank:", beneficiary: "Beneficiary:", copy: "Copy IBAN", wa: "Confirm Order",
-                    email: "Activation Email:", foot: "All Rights Reserved to NIKAI STORE © 2024", toast: "Copied Successfully ✅"
+                    email: "Activation Email:", foot: "All Rights Reserved to NIKAI STORE © 2024", toast: "Copied Successfully ✅",
+                    about: "About Us", contactTitle: "Contact Us", dashboard: "Dashboard",
+                    orders: "Your Orders", logout: "Logout", noOrders: "No previous orders",
+                    statusCompleted: "Completed", statusPending: "Pending"
                 }
             };
             
@@ -349,9 +613,14 @@
             document.getElementById('txt-btn-wa').innerHTML = `<i class="fab fa-whatsapp"></i> ${t.wa}`;
             document.getElementById('txt-email').innerText = t.email;
             document.getElementById('txt-foot').innerText = t.foot;
+            document.querySelector('#about-us .section-title').innerText = t.about;
+            document.querySelector('#contact-us .section-title').innerText = t.contactTitle;
+            document.querySelector('.welcome-message').innerHTML = t.dashboard;
+            document.getElementById('user-name').innerText = userAccount ? userAccount.name : '';
             
             initGrid();
             if(currentProduct) renderOrderArea();
+            if(document.getElementById('dashboard').style.display === 'block') renderOrders();
         }
 
         function copyIBAN() {
@@ -368,15 +637,156 @@
                 alert(currentLang === 'ar' ? "يرجى إدخال البريد الإلكتروني" : "Please enter email");
                 return;
             }
+            
+            // إضافة الطلب إلى قائمة الطلبات
+            addOrder(currentProduct.id, currentSelectedPlan.l, currentSelectedPlan.p);
+            
+            // محاكاة إرسال رسالة تأكيد
+            sendOrderConfirmation(email);
+            
+            // فتح رابط واتساب
             let msg = `طلب جديد:\n- ${currentProduct.name[currentLang]}\n- الباقة: ${currentSelectedPlan.l}\n- السعر: ${currentSelectedPlan.p}`;
             if(email) msg += `\n- الإيميل: ${email}`;
+            
             window.open(`https://wa.me/966591388202?text=${encodeURIComponent(msg)}`);
         }
 
-        function openDrawer() { document.getElementById('drawer').classList.add('active'); document.getElementById('overlay').style.display = 'block'; }
-        function closeDrawer() { document.getElementById('drawer').classList.remove('active'); document.getElementById('overlay').style.display = 'none'; }
+        function sendOrderConfirmation(email) {
+            if (email) {
+                const orderDetails = `
+                    تفاصيل طلبك:
+                    - ${currentProduct.name[currentLang]}
+                    - الباقة: ${currentSelectedPlan.l}
+                    - السعر: ${currentSelectedPlan.p} ريال
+                    - تاريخ الطلب: ${new Date().toLocaleDateString()}
+                `;
+                console.log("تم إرسال رسالة تأكيد إلى بريدك الإلكتروني:", orderDetails);
+            }
+        }
 
+        function showLoginModal() {
+            if (userAccount) {
+                document.getElementById('dashboard').style.display = 'block';
+                document.querySelector('.container').classList.add('dashboard-mode');
+                document.getElementById('user-name').textContent = userAccount.name;
+                renderOrders();
+                return;
+            }
+            
+            const loginModal = `
+                <div class="modal-overlay" id="login-overlay">
+                    <div class="modal-box">
+                        <h3>${currentLang === 'ar' ? 'تسجيل الدخول' : 'Login'}</h3>
+                        <input type="text" placeholder="${currentLang === 'ar' ? 'البريد الإلكتروني' : 'Email'}" id="login-email">
+                        <input type="password" placeholder="${currentLang === 'ar' ? 'كلمة المرور' : 'Password'}" id="login-password">
+                        <button onclick="loginUser()">${currentLang === 'ar' ? 'دخول' : 'Login'}</button>
+                        <p>${currentLang === 'ar' ? 'ليس لديك حساب؟' : 'Don\'t have an account?'} <a onclick="showSignupModal()">${currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up'}</a></p>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', loginModal);
+        }
+
+        function loginUser() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // محاكاة عملية تسجيل الدخول
+            const savedUser = localStorage.getItem('userAccount');
+            if (savedUser) {
+                userAccount = JSON.parse(savedUser);
+                closeModal();
+                document.getElementById('dashboard').style.display = 'block';
+                document.querySelector('.container').classList.add('dashboard-mode');
+                document.getElementById('user-name').textContent = userAccount.name;
+                renderOrders();
+            } else {
+                alert(currentLang === 'ar' ? 'بيانات دخول غير صحيحة' : 'Invalid credentials');
+            }
+        }
+
+        function showSignupModal() {
+            closeModal();
+            const signupModal = `
+                <div class="modal-overlay" id="signup-overlay">
+                    <div class="modal-box">
+                        <h3>${currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up'}</h3>
+                        <input type="text" placeholder="${currentLang === 'ar' ? 'الاسم الكامل' : 'Full Name'}" id="fullname">
+                        <input type="text" placeholder="${currentLang === 'ar' ? 'البريد الإلكتروني' : 'Email'}" id="signup-email">
+                        <input type="password" placeholder="${currentLang === 'ar' ? 'كلمة المرور' : 'Password'}" id="signup-password">
+                        <input type="password" placeholder="${currentLang === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password'}" id="confirm-password">
+                        <button onclick="signupUser()">${currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', signupModal);
+        }
+
+        function signupUser() {
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                alert(currentLang === 'ar' ? 'كلمات المرور غير متطابقة' : 'Passwords do not match');
+                return;
+            }
+            
+            // حفظ بيانات المستخدم
+            userAccount = { name: fullname, email, password };
+            localStorage.setItem('userAccount', JSON.stringify(userAccount));
+            closeModal();
+            
+            document.getElementById('dashboard').style.display = 'block';
+            document.querySelector('.container').classList.add('dashboard-mode');
+            document.getElementById('user-name').textContent = userAccount.name;
+            orders = [];
+        }
+
+        function closeModal() {
+            document.getElementById('login-overlay')?.remove();
+            document.getElementById('signup-overlay')?.remove();
+        }
+
+        function openDrawer() { 
+            document.getElementById('drawer').classList.add('active'); 
+            document.getElementById('overlay').style.display = 'block'; 
+        }
+        function closeDrawer() { 
+            document.getElementById('drawer').classList.remove('active'); 
+            document.getElementById('overlay').style.display = 'none'; 
+        }
+
+        function showAboutSection() {
+            document.getElementById('about-us').style.display = 'block';
+            document.getElementById('contact-us').style.display = 'none';
+            document.getElementById('testimonials').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        function showContactSection() {
+            document.getElementById('about-us').style.display = 'none';
+            document.getElementById('contact-us').style.display = 'block';
+            document.getElementById('testimonials').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        function showDashboardSection() {
+            if (!userAccount) {
+                showLoginModal();
+                return;
+            }
+            document.getElementById('about-us').style.display = 'none';
+            document.getElementById('contact-us').style.display = 'none';
+            document.getElementById('testimonials').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            renderOrders();
+        }
+
+        // البدء
         initGrid();
+        checkUserAccount();
     </script>
 </body>
 </html>
